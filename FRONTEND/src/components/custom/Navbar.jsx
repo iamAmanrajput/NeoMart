@@ -6,7 +6,7 @@ import { User } from "lucide-react";
 import LogoutToggle from "./LogoutToggle";
 
 const Navbar = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   return (
     <nav className="flex justify-between items-center px-8 py-5 border-b dark:bg-zinc-900">
       {/* icons */}
@@ -14,7 +14,7 @@ const Navbar = () => {
         NeoMart
       </Link>
       <div className="flex gap-4 items-center">
-        <CartDrawer></CartDrawer>
+        {isAuthenticated && <CartDrawer></CartDrawer>}
         {isAuthenticated ? (
           <LogoutToggle />
         ) : (
