@@ -4,9 +4,16 @@ import Footer from "@/components/custom/Footer";
 import { starGenerator } from "@/constants/Helper";
 import { Circle, Minus, Plus } from "lucide-react";
 import { Colors } from "@/constants/colors";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import ReviewComponent from "@/components/custom/ReviewComponent";
 
 const Product = () => {
   const [productQuantity, setProductQuantity] = useState(5);
+  const [pincode, setPincode] = useState("");
+  const [availabilityMessage, setAvailabilityMessage] = useState("");
+  const [purchaseProduct, setPurchaseProduct] = useState(false);
+  const [address, setAddress] = useState("");
   const imageArray = [
     {
       url: "https://res.cloudinary.com/dmljeib0i/image/upload/v1737486186/products/l8hine0k4jwlw9jmujvz.jpg",
@@ -131,12 +138,36 @@ const Product = () => {
                 )}
               </div>
 
-              <div></div>
+              <div className="grid gap-3 my-5">
+                <div className="flex gap-3">
+                  <Input
+                    placeholder="Enter Your PinCode Here"
+                    onChange={(e) => setPincode(e.target.value)}
+                  />
+                  <Button>Check Availability</Button>
+                </div>
+                <p className="text-sm px-2">{availabilityMessage}</p>
+              </div>
+              <div className="flex gap-3">
+                <Button onClick={() => setPurchaseProduct(true)}>
+                  Buy Now
+                </Button>
+                <Button>Add To Cart</Button>
+              </div>
+              {purchaseProduct && (
+                <div className="my-2 space-y-2">
+                  <Input
+                    placeholder="Enter Your Address Here..."
+                    onChange={(e) => setAddress(e.target.value)}
+                  />
+                  <Button>Confirm Order</Button>
+                </div>
+              )}
             </div>
           </div>
         </main>
-
         {/* review section */}
+        <ReviewComponent></ReviewComponent>
       </div>
 
       <Footer></Footer>
