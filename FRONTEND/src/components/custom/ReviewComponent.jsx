@@ -75,6 +75,12 @@ const ReviewComponent = () => {
               </div>
             </div>
           </div>
+          <div className="mt-4">
+            <Textarea placeholder="Write your reply..." />
+            <Button className="mt-4" size="sm">
+              Reply
+            </Button>
+          </div>
         </div>
       </div>
     </div>
