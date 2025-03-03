@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-import Navbar from "@/components/custom/Navbar";
-import Footer from "@/components/custom/Footer";
 import { starGenerator } from "@/constants/Helper";
 import { Circle, Minus, Plus } from "lucide-react";
 import { Colors } from "@/constants/colors";
@@ -37,8 +35,6 @@ const Product = () => {
 
   return (
     <div>
-      <Navbar></Navbar>
-
       <div>
         <main className="w-[92.5vw] lg:w-[70vw] flex flex-col sm:flex-row justify-start items-start gap-10 mx-auto my-10">
           {/* left side */}
@@ -169,8 +165,6 @@ const Product = () => {
         {/* review section */}
         <ReviewComponent></ReviewComponent>
       </div>
-
-      <Footer></Footer>
     </div>
   );
 };

@@ -1,6 +1,4 @@
 import React from "react";
-import Navbar from "@/components/custom/Navbar";
-import Footer from "@/components/custom/Footer";
 import CheckoutProduct from "@/components/custom/CheckoutProduct";
 import { Card } from "@/components/ui/card";
 import { Label } from "@radix-ui/react-label";
@@ -11,7 +9,6 @@ import { Button } from "@/components/ui/button";
 const Checkout = () => {
   return (
     <div>
-      <Navbar></Navbar>
       <div className="w-[90vw] mx-auto sm:w-[60vw] flex justify-between items-center sm:my-20">
         <div className="flex flex-col sm:flex-row gap-5 mx-auto my-10">
           {/* product details */}
@@ -77,7 +74,6 @@ const Checkout = () => {
           </div>
         </div>
       </div>
-      <Footer></Footer>
     </div>
   );
 };

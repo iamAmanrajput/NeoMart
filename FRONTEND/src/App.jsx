@@ -8,21 +8,64 @@ import Checkout from "./pages/Checkout";
 import AdminLogin from "./pages/AdminLogin";
 import Error from "./pages/Error";
 import Success from "./pages/Success";
+import RootLayout from "./components/layouts/RootLayout";
 
 const App = () => {
   return (
     <div>
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />}></Route>
-        <Route path="/signup" element={<Signup />}></Route>
+        <Route
+          path="/"
+          element={
+            <RootLayout>
+              <Home />
+            </RootLayout>
+          }
+        />
+        <Route
+          path="/login"
+          element={
+            <RootLayout>
+              <Login />
+            </RootLayout>
+          }
+        ></Route>
+        <Route
+          path="/signup"
+          element={
+            <RootLayout>
+              <Signup />
+            </RootLayout>
+          }
+        ></Route>
 
-        <Route path="/product" element={<Product />}></Route>
-        <Route path="/checkout" element={<Checkout />}></Route>
+        <Route
+          path="/product"
+          element={
+            <RootLayout>
+              <Product />
+            </RootLayout>
+          }
+        ></Route>
+        <Route
+          path="/checkout"
+          element={
+            <RootLayout>
+              <Checkout />
+            </RootLayout>
+          }
+        ></Route>
         <Route path="/success" element={<Success />}></Route>
 
         {/* admin routes */}
-        <Route path="/admin/login" element={<AdminLogin />}></Route>
+        <Route
+          path="/admin/login"
+          element={
+            <RootLayout>
+              <AdminLogin />
+            </RootLayout>
+          }
+        ></Route>
 
         {/* Error route */}
         <Route path="/*" element={<Error />}></Route>

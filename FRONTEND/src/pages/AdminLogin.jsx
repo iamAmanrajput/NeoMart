@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-import Navbar from "@/components/custom/Navbar";
-import Footer from "@/components/custom/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,7 +9,6 @@ const AdminLogin = () => {
   const [isChecked, setIsChecked] = useState(false);
   return (
     <div>
-      <Navbar />
       <div className="flex justify-center sm:items-center sm:min-h-screen mt-10 sm:mt-0 bg-gray-100 dark:bg-black text-black dark:text-white">
         <div className="w-96 p-6 bg-white dark:bg-[#000000] dark:border-gray-700 dark:border rounded-lg shadow-2xl">
           <h2 className="text-2xl font-bold text-center mb-6">
@@ -52,7 +49,6 @@ const AdminLogin = () => {
           </p>
         </div>
       </div>
-      <Footer />
     </div>
   );
 };
