@@ -2,6 +2,11 @@ import React from "react";
 import Navbar from "@/components/custom/Navbar";
 import Footer from "@/components/custom/Footer";
 import CheckoutProduct from "@/components/custom/CheckoutProduct";
+import { Card } from "@/components/ui/card";
+import { Label } from "@radix-ui/react-label";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
 
 const Checkout = () => {
   return (
@@ -43,6 +48,33 @@ const Checkout = () => {
             </div>
           </div>
           {/* personel details*/}
+          <div className="w-[90vw] sm:w-[20vw]">
+            <Card className="shadow-md p-4">
+              <h2 className="text-xl font-medium">Billing Information</h2>
+              <div className="space-y-2">
+                <Label htmlFor="name">Full Name</Label>
+                <Input
+                  id="name"
+                  placeholder="John Doe"
+                  className="w-full mt-2"
+                />
+                <Label htmlFor="email">Email Address</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="you@example.com"
+                  className="w-full mt-2"
+                />
+                <Label htmlFor="address">Shipping Address</Label>
+                <Textarea
+                  id="address"
+                  placeholder="123 Main st. City, State"
+                  className="w-full h-[175px] mt-2"
+                />
+                <Button className="w-full">Place Order</Button>
+              </div>
+            </Card>
+          </div>
         </div>
       </div>
       <Footer></Footer>
