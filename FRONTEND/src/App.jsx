@@ -8,7 +8,13 @@ import Checkout from "./pages/Checkout";
 import AdminLogin from "./pages/AdminLogin";
 import Error from "./pages/Error";
 import Success from "./pages/Success";
-import RootLayout from "./components/layouts/RootLayout";
+import RootLayout from "./layouts/RootLayout";
+import AdminLayout from "./layouts/AdminLayout";
+import AllProducts from "./Admin/AllProducts";
+import Analytics from "./Admin/Analytics";
+import CreateProduct from "./Admin/CreateProduct";
+import Orders from "./Admin/Orders";
+import Settings from "./Admin/Settings";
 
 const App = () => {
   return (
@@ -64,6 +70,51 @@ const App = () => {
             <RootLayout>
               <AdminLogin />
             </RootLayout>
+          }
+        ></Route>
+
+        <Route
+          path="/admin/dashboard"
+          element={
+            <AdminLayout>
+              <CreateProduct></CreateProduct>
+            </AdminLayout>
+          }
+        ></Route>
+
+        <Route
+          path="/admin/dashboard/all-products"
+          element={
+            <AdminLayout>
+              <AllProducts />
+            </AdminLayout>
+          }
+        ></Route>
+
+        <Route
+          path="/admin/dashboard/analytics"
+          element={
+            <AdminLayout>
+              <Analytics />
+            </AdminLayout>
+          }
+        ></Route>
+
+        <Route
+          path="/admin/dashboard/orders"
+          element={
+            <AdminLayout>
+              <Orders />
+            </AdminLayout>
+          }
+        ></Route>
+
+        <Route
+          path="/admin/dashboard/settings"
+          element={
+            <AdminLayout>
+              <Settings />
+            </AdminLayout>
           }
         ></Route>
 
