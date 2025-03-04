@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/carousel";
 
 const images = [
-  "https://images.unsplash.com/photo-1739907548147-f991baedfd5e?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHw4fHx8ZW58MHx8fHx8",
+  "https://lh3.googleusercontent.com/Udi7H20iJ-H9CWGdlASS5lZNFvBk3GsVmM6IMeux-wMdEnb7vkw9AZZL7jco4gFPrc6SFmPnkENIwetHbNwRD0ZPmAut2jnTUCk=s2400-w2400-e365-rw-v0-nu",
   "https://images.unsplash.com/photo-1740652646168-0d1557a6e8c4?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHwxNnx8fGVufDB8fHx8fA%3D%3D",
   "https://plus.unsplash.com/premium_photo-1730133770236-934c381e4684?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxmZWF0dXJlZC1waG90b3MtZmVlZHwxN3x8fGVufDB8fHx8fA%3D%3D",
 ];
