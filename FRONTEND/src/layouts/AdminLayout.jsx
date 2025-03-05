@@ -8,7 +8,7 @@ const AdminLayout = ({ children }) => {
       <AppSidebar />
       <main>
         <SidebarTrigger />
-        {children}
+        <div className="sm:m-10">{children}</div>
       </main>
     </SidebarProvider>
   );
