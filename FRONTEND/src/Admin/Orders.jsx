@@ -27,7 +27,7 @@ const Orders = () => {
         <div className="space-y-8">
           <div className="p-4 space-y-4">
             <h2 className="text-xl font-medium">Order Summery</h2>
-            <div className="grid space-y-1 gap-2 sm:w-[80vw]">
+            <div className="grid space-y-1 gap-2 md:w-[70vw] 2xl:w-[80rem]">
               <Card className="space-y-2 p-3 shadow-md">
                 <div className="grid sm:grid-cols-3 gap-2">
                   <OrderProductTile />
