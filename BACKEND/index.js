@@ -3,8 +3,12 @@ const app = express();
 
 require("dotenv").config();
 
+const { connectDb } = require("./config/database");
+connectDb();
+
 const PORT = process.env.PORT || 3000;
 const cors = require("cors");
+const { connect } = require("mongoose");
 
 //handling connection error
 app.use(cors({ origin: process.env.FRONTEND_URL }));
