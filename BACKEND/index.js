@@ -21,6 +21,9 @@ app.get("/", (req, res) => {
 //routes
 app.use("/api/v1/user", require("./routes/authRoutes"));
 
+//admin routes
+app.use("/api/v1/admin", require("./routes/adminRoutes"));
+
 app.listen(PORT, () => {
   console.log(`Server is running on port : ${PORT}`);
 });
