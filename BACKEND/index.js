@@ -18,6 +18,9 @@ app.get("/", (req, res) => {
   res.send(`<center><h1>Server Running On Port : ${PORT}</h1></center>`);
 });
 
+//routes
+app.use("/api/v1/user", require("./routes/authRoutes"));
+
 app.listen(PORT, () => {
   console.log(`Server is running on port : ${PORT}`);
 });
