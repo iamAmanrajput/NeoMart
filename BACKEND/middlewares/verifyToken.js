@@ -21,7 +21,7 @@ const isLoggedIn = async (req, res, next) => {
           .json({ success: false, message: "Invalid or Expired Token" });
       }
 
-      req.id = decoded._id;
+      req.id = decoded.id;
       req.role = decoded.role;
       next();
     });

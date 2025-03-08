@@ -24,6 +24,7 @@ app.use("/api/v1/pincode", require("./routes/pincodeRoutes"));
 
 //admin routes
 app.use("/api/v1/admin", require("./routes/adminRoutes"));
+app.use("/api/v1/setting", require("./routes/settingRoutes"));
 
 app.listen(PORT, () => {
   console.log(`Server is running on port : ${PORT}`);
