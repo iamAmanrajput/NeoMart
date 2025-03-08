@@ -20,6 +20,7 @@ app.get("/", (req, res) => {
 
 //routes
 app.use("/api/v1/user", require("./routes/authRoutes"));
+app.use("/api/v1/pincode", require("./routes/pincodeRoutes"));
 
 //admin routes
 app.use("/api/v1/admin", require("./routes/adminRoutes"));
