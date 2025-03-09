@@ -73,3 +73,234 @@ exports.createProduct = async (req, res) => {
     res.status(500).json({ success: false, message: "Internal server error" });
   }
 };
+
+exports.updateProduct = async (req, res) => {
+  try {
+    if (req.role !== ROLES.admin) {
+      return res.status(403).json({
+        success: false,
+        message: "Unauthorized",
+      });
+    }
+
+    const { ...data } = req.body;
+    const { id } = req.params;
+
+    const product = await Product.findByIdAndUpdate(id, data, { new: true });
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Product updated successfully",
+      data: product,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+exports.deleteProduct = async (req, res) => {
+  try {
+    if (req.role !== ROLES.admin) {
+      return res.status(403).json({
+        success: false,
+        message: "Unauthorized",
+      });
+    }
+
+    const { id } = req.params;
+
+    const product = await Product.findByIdAndDelete(id);
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Product deleted successfully",
+      data: product,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+// get all products with pagination, sorting, filtering and searching
+exports.getProducts = async (req, res) => {
+  try {
+    let { page, limit, category, price, search } = req.query;
+    page = parseInt(page) || 1;
+    limit = parseInt(limit) || 9;
+    let query = {};
+
+    if (category) {
+      query.category = category.charAt(0).toUpperCase() + category.slice(1);
+    }
+
+    if (category == "all") {
+      delete query.category;
+    }
+
+    if (search) {
+      query.name = { $regex: search, $options: "i" };
+    }
+
+    if (price > 0) {
+      query.price = { $lte: price };
+    }
+
+    const totalProducts = await Product.countDocuments(query);
+    const totalPages = Math.ceil(totalProducts / limit);
+
+    const products = await Product.find(query)
+      .select("name price rating images description blacklisted")
+      .skip((page - 1) * limit)
+      .limit(limit);
+
+    if (!products.length) {
+      return res.status(404).json({
+        success: false,
+        message: "No products found",
+      });
+    }
+
+    let newProductsArray = [];
+
+    products.forEach((product) => {
+      const productObj = product.toObject();
+      productObj.image = productObj.images[0].url;
+      delete productObj.images;
+      newProductsArray.push(productObj);
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "Products fetched successfully",
+      data: newProductsArray,
+      pagination: {
+        totalProducts,
+        totalPages,
+        currentPage: page,
+        pageSize: limit,
+      },
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+exports.getProductByName = async (req, res) => {
+  try {
+    const { name } = req.params;
+    const product = await Product.findOne({ name });
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Product fetched successfully",
+      data: product,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+exports.blacklistProduct = async (req, res) => {
+  try {
+    if (req.role !== ROLES.admin) {
+      return res.status(403).json({
+        success: false,
+        message: "Unauthorized",
+      });
+    }
+
+    const { id } = req.params;
+    const product = await Product.findByIdAndUpdate(
+      id,
+      {
+        blacklisted: true,
+      },
+      { new: true }
+    );
+
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: `Product ${product.name} has been blacklisted`,
+      data: product,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+exports.removeFromBlacklist = async (req, res) => {
+  try {
+    if (req.role !== ROLES.admin) {
+      return res.status(403).json({
+        success: false,
+        message: "Unauthorized",
+      });
+    }
+
+    const { id } = req.params;
+    const product = await Product.findByIdAndUpdate(
+      id,
+      {
+        blacklisted: false,
+      },
+      { new: true }
+    );
+
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found",
+      });
+    }
+    return res.status(200).json({
+      success: true,
+      message: `Product ${product.name} has been removed from blacklist`,
+      data: product,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
