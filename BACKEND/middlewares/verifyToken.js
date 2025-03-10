@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
-const isLoggedIn = async (req, res, next) => {
+exports.isLoggedIn = async (req, res, next) => {
   try {
     // Token ko cookies ya headers se lena
     const token =
@@ -29,5 +29,3 @@ const isLoggedIn = async (req, res, next) => {
     return res.status(500).json({ success: false, message: error.message });
   }
 };
-
-module.exports = { isLoggedIn };
