@@ -211,6 +211,8 @@ exports.getMetrics = async (req, res) => {
       path: "products.id",
       select: "category",
     });
+
+    return;
   } catch (error) {
     return res.status(500).json({
       success: false,
