@@ -15,6 +15,7 @@ import Analytics from "./Admin/Analytics";
 import CreateProduct from "./Admin/CreateProduct";
 import Orders from "./Admin/Orders";
 import Settings from "./Admin/Settings";
+import MyOrders from "./pages/MyOrders";
 
 const App = () => {
   return (
@@ -28,6 +29,7 @@ const App = () => {
             </RootLayout>
           }
         />
+
         <Route
           path="/login"
           element={
@@ -36,6 +38,7 @@ const App = () => {
             </RootLayout>
           }
         ></Route>
+
         <Route
           path="/signup"
           element={
@@ -53,6 +56,7 @@ const App = () => {
             </RootLayout>
           }
         ></Route>
+
         <Route
           path="/checkout"
           element={
@@ -61,6 +65,16 @@ const App = () => {
             </RootLayout>
           }
         ></Route>
+
+        <Route
+          path="/orders"
+          element={
+            <RootLayout>
+              <MyOrders />
+            </RootLayout>
+          }
+        ></Route>
+
         <Route path="/success" element={<Success />}></Route>
 
         {/* admin routes */}

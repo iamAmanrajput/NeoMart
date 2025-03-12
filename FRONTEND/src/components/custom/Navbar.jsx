@@ -6,7 +6,7 @@ import { User } from "lucide-react";
 import LogoutToggle from "./LogoutToggle";
 
 const Navbar = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(true);
   return (
     <nav className="flex justify-between items-center px-8 py-5 border-b dark:bg-zinc-900">
       {/* icons */}
