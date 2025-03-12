@@ -30,6 +30,7 @@ app.get("/", (req, res) => {
 //routes
 app.use("/api/v1/user", require("./routes/authRoutes"));
 app.use("/api/v1/pincode", require("./routes/pincodeRoutes"));
+app.use("/api/v1/payment", require("./routes/paymentRoutes"));
 
 //admin routes
 app.use("/api/v1/admin", require("./routes/adminRoutes"));

@@ -9,7 +9,7 @@ const {
   blacklistProduct,
   removeFromBlacklist,
 } = require("../controllers/productController");
-const { isLoggedIn } = require("../middlewares/auth");
+const { isLoggedIn } = require("../middlewares/verifyToken");
 
 router.route("/create-product").post(isLoggedIn, createProduct);
 
