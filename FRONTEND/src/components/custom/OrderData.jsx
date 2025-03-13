@@ -1,5 +1,6 @@
 import React from "react";
 import { Card } from "../ui/card";
+import { ArrowDownToLine, IndianRupee } from "lucide-react";
 
 const OrderData = ({
   amount = 100,
@@ -32,8 +33,28 @@ const OrderData = ({
             </p>
           </div>
         </div>
-        <div></div>
+        <div className="flex sm:flex-col gap-3 sm:gap-0 mt-2 sm:mt-0 sm:items-center">
+          {" "}
+          <h2 className="text-md sm:text-xl font-bold flex items-center dark:text-customYellow">
+            <IndianRupee size={18} /> 499
+          </h2>
+          <p className="dark:bg-customYellow text-end ">Qty : 1</p>
+        </div>
       </div>
+
+      <div className="flex flex-col sm:flex-row justify-between sm:items-center">
+        <span>
+          Ordered on : <span className="capitalize">1 Jan 2025</span>
+        </span>
+        <span className="hover:underline text-sm cursor-pointer flex items-center gap-1 dark:text-customYellow">
+          <ArrowDownToLine size={10} />
+          Download Invoice
+        </span>
+      </div>
+      <hr />
+      <span>
+        Delivery At : <span className="capitalize">5 Jan 2025</span>
+      </span>
     </Card>
   );
 };
