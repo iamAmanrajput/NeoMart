@@ -6,32 +6,56 @@ const Admin = require("../models/admin");
 exports.signup = async (req, res) => {
   try {
     const { name, email, password, phone } = req.body;
+
+    // Validate required fields
     if (!name || !email || !password || !phone) {
       return res.status(400).json({
         success: false,
         message: "All fields are required",
       });
     }
-    const user = await User.findOne({ email });
-    if (user) {
+
+    // Convert email to lowercase for consistency
+    const normalizedEmail = email.toLowerCase();
+
+    // Check if user already exists
+    const existingUser = await User.findOne({ email: normalizedEmail });
+    if (existingUser) {
       return res.status(400).json({
         success: false,
-        message: "User already exists",
+        message: "User with this email already exists",
       });
     }
+
+    // Validate password strength
+    if (password.length < 6) {
+      return res.status(400).json({
+        success: false,
+        message: "Password must be at least 6 characters long",
+      });
+    }
+
+    // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = await User.create({
+
+    // Create new user
+    await User.create({
       name,
-      email,
+      email: normalizedEmail,
       password: hashedPassword,
       phone,
     });
+
     return res.status(201).json({
       success: true,
       message: "User created successfully",
     });
   } catch (error) {
-    return res.status(500).json({ success: false, message: error.message });
+    console.error("Signup Error:", error.message);
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error. Please try again",
+    });
   }
 };
 
