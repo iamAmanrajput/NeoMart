@@ -16,7 +16,7 @@ const Signup = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setErrorMsg(""); // Reset error message before validation
+    setErrorMsg("");
     setLoading(true);
 
     const { name, email, phone, password } = e.target.elements;
@@ -41,7 +41,7 @@ const Signup = () => {
           name: name.value.trim(),
           phone: phone.value.trim(),
           email: email.value.trim(),
-          password: password.value.trim(),
+          password: password.value,
         }
       );
 

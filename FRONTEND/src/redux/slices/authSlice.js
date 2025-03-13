@@ -11,10 +11,11 @@ const authSlice = createSlice({
 
   reducers: {
     setUserLogin: (state, action) => {
-      state.role = action.payload.role;
+      state.role = action.payload.user.role;
+      console.log(action.payload.user.role);
       state.user = action.payload.user;
       state.isAuthenticated = true;
-      localStorage.setItem("role", action.payload.role);
+      localStorage.setItem("role", action.payload.user.role);
       localStorage.setItem("user", JSON.stringify(action.payload.user));
       localStorage.setItem("token", action.payload.token);
     },
