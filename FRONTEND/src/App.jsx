@@ -16,6 +16,7 @@ import CreateProduct from "./Admin/CreateProduct";
 import Orders from "./Admin/Orders";
 import Settings from "./Admin/Settings";
 import MyOrders from "./pages/MyOrders";
+import ProtectedRoute from "./components/custom/ProtectedRoute";
 
 const App = () => {
   return (
@@ -24,27 +25,33 @@ const App = () => {
         <Route
           path="/"
           element={
-            <RootLayout>
-              <Home />
-            </RootLayout>
+            <ProtectedRoute>
+              <RootLayout>
+                <Home />
+              </RootLayout>
+            </ProtectedRoute>
           }
         />
 
         <Route
           path="/login"
           element={
-            <RootLayout>
-              <Login />
-            </RootLayout>
+            <ProtectedRoute>
+              <RootLayout>
+                <Login />
+              </RootLayout>
+            </ProtectedRoute>
           }
         ></Route>
 
         <Route
           path="/signup"
           element={
-            <RootLayout>
-              <Signup />
-            </RootLayout>
+            <ProtectedRoute>
+              <RootLayout>
+                <Signup />
+              </RootLayout>
+            </ProtectedRoute>
           }
         ></Route>
 
@@ -60,18 +67,22 @@ const App = () => {
         <Route
           path="/checkout"
           element={
-            <RootLayout>
-              <Checkout />
-            </RootLayout>
+            <ProtectedRoute>
+              <RootLayout>
+                <Checkout />
+              </RootLayout>
+            </ProtectedRoute>
           }
         ></Route>
 
         <Route
           path="/orders"
           element={
-            <RootLayout>
-              <MyOrders />
-            </RootLayout>
+            <ProtectedRoute>
+              <RootLayout>
+                <MyOrders />
+              </RootLayout>
+            </ProtectedRoute>
           }
         ></Route>
 
@@ -81,54 +92,66 @@ const App = () => {
         <Route
           path="/admin/login"
           element={
-            <RootLayout>
-              <AdminLogin />
-            </RootLayout>
+            <ProtectedRoute>
+              <RootLayout>
+                <AdminLogin />
+              </RootLayout>
+            </ProtectedRoute>
           }
         ></Route>
 
         <Route
           path="/admin/dashboard"
           element={
-            <AdminLayout>
-              <CreateProduct></CreateProduct>
-            </AdminLayout>
+            <ProtectedRoute>
+              <AdminLayout>
+                <CreateProduct></CreateProduct>
+              </AdminLayout>
+            </ProtectedRoute>
           }
         ></Route>
 
         <Route
           path="/admin/dashboard/all-products"
           element={
-            <AdminLayout>
-              <AllProducts />
-            </AdminLayout>
+            <ProtectedRoute>
+              <AdminLayout>
+                <AllProducts />
+              </AdminLayout>
+            </ProtectedRoute>
           }
         ></Route>
 
         <Route
           path="/admin/dashboard/analytics"
           element={
-            <AdminLayout>
-              <Analytics />
-            </AdminLayout>
+            <ProtectedRoute>
+              <AdminLayout>
+                <Analytics />
+              </AdminLayout>
+            </ProtectedRoute>
           }
         ></Route>
 
         <Route
           path="/admin/dashboard/orders"
           element={
-            <AdminLayout>
-              <Orders />
-            </AdminLayout>
+            <ProtectedRoute>
+              <AdminLayout>
+                <Orders />
+              </AdminLayout>
+            </ProtectedRoute>
           }
         ></Route>
 
         <Route
           path="/admin/dashboard/settings"
           element={
-            <AdminLayout>
-              <Settings />
-            </AdminLayout>
+            <ProtectedRoute>
+              <AdminLayout>
+                <Settings />
+              </AdminLayout>
+            </ProtectedRoute>
           }
         ></Route>
 
