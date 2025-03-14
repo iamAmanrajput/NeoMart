@@ -10,7 +10,7 @@ const { cloudinaryConnect } = require("./config/cloudinary");
 cloudinaryConnect();
 const fileUpload = require("express-fileupload");
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 4000;
 const cors = require("cors");
 
 //handling connection error

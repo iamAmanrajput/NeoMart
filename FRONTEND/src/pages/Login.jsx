@@ -77,7 +77,9 @@ const Login = () => {
 
           <form onSubmit={handleSubmit}>
             <div className="mb-4">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="emai" className="mb-2">
+                Email
+              </Label>
               <Input
                 type="email"
                 id="email"
@@ -87,7 +89,9 @@ const Login = () => {
               />
             </div>
             <div className="mb-4">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password" className="mb-2">
+                Password
+              </Label>
               <Input
                 type="password"
                 id="password"

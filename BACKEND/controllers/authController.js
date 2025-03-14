@@ -142,14 +142,14 @@ exports.adminLogin = async (req, res) => {
   try {
     const { username, password } = req.body;
     if (!username || !password) {
-      return res.status(400).json({
+      return res.status(40).json({
         success: false,
         message: "All fields are required",
       });
     }
     let admin = await Admin.findOne({ username });
     if (!admin) {
-      return res.status(400).json({
+      return res.status(401).json({
         success: false,
         message: "Invalid Credentials",
       });
@@ -157,7 +157,7 @@ exports.adminLogin = async (req, res) => {
 
     const isMatch = await bcrypt.compare(password, admin.password);
     if (!isMatch) {
-      return res.status(400).json({
+      return res.status(401).json({
         success: false,
         message: "Invalid Credentials",
       });
@@ -171,7 +171,7 @@ exports.adminLogin = async (req, res) => {
       success: true,
       message: "Admin Logged in successfully",
       token,
-      admin: {
+      user: {
         id: admin._id,
         username: admin.username,
         role: admin.role,
