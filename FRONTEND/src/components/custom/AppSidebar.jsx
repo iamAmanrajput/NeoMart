@@ -18,6 +18,8 @@ import {
   SidebarMenuItem,
   SidebarFooter,
 } from "@/components/ui/sidebar";
+import { useDispatch } from "react-redux";
+import { setUserLogout } from "@/redux/slices/authSlice";
 
 // Menu items.
 const items = [
@@ -50,6 +52,7 @@ const items = [
 
 const AppSidebar = () => {
   const { pathname } = useLocation();
+  const dispatch = useDispatch();
   return (
     <Sidebar>
       <SidebarHeader>
@@ -77,7 +80,12 @@ const AppSidebar = () => {
         </SidebarGroupContent>
       </SidebarContent>
       <SidebarFooter>
-        <Button className="cursor-pointer">Logout</Button>
+        <Button
+          onClick={() => dispatch(setUserLogout())}
+          className="cursor-pointer"
+        >
+          Logout
+        </Button>
       </SidebarFooter>
     </Sidebar>
   );
