@@ -4,12 +4,15 @@ import { toast } from "sonner";
 
 const useErrorLogout = () => {
   const dispatch = useDispatch();
-  const handleErrorLogout = (error, othertTitle = "error occured") => {
-    if (error.response.status == 401) {
+
+  const handleErrorLogout = (error, otherTitle = "An error occurred") => {
+    if (error?.response?.status === 401) {
       dispatch(setUserLogout());
       toast.error("Session Expired, Please login again to continue");
     } else {
-      toast.error(othertTitle, error?.response?.data.message);
+      const errorMessage =
+        error?.response?.data?.message || "Something went wrong!";
+      toast.error(`${otherTitle}: ${errorMessage}`);
     }
   };
 
