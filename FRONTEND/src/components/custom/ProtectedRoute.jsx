@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { useSelector } from "react-redux";
 import { useLocation, Navigate } from "react-router-dom";
 
@@ -7,6 +7,11 @@ const ProtectedRoute = ({ children }) => {
   const { isAuthenticated, role } = useSelector((state) => state.auth);
   const { cartItems } = useSelector((state) => state.cart);
 
+  const isAdminPath = useMemo(
+    () => pathname.startsWith("/admin/dashboard"),
+    [pathname]
+  );
+
   if (isAuthenticated && role === "admin" && pathname === "/admin/login") {
     return <Navigate to="/admin/dashboard" />;
   }
@@ -14,12 +19,12 @@ const ProtectedRoute = ({ children }) => {
   if (
     isAuthenticated &&
     role === "user" &&
-    (pathname.startsWith("/admin/dashboard") || pathname === "/admin/login")
+    (isAdminPath || pathname === "/admin/login")
   ) {
     return <Navigate to="/" />;
   }
 
-  if (!isAuthenticated && pathname === "/admin/dashboard") {
+  if (!isAuthenticated && isAdminPath) {
     return <Navigate to="/" />;
   }
 

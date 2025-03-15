@@ -1,6 +1,7 @@
 import { setUserLogout } from "@/redux/slices/authSlice";
 import { useDispatch } from "react-redux";
 import { toast } from "sonner";
+import { Navigate } from "react-router-dom";
 
 const useErrorLogout = () => {
   const dispatch = useDispatch();

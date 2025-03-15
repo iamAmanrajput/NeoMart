@@ -41,7 +41,7 @@ exports.createProduct = async (req, res) => {
     }
 
     for (const file of images) {
-      const result = await uploadImageToCloudinary(file, "products");
+      const result = await uploadImageToCloudinary(file, "NeoMart");
 
       uploadedImages.push({
         url: result.secure_url,
