@@ -34,7 +34,6 @@ exports.createProduct = async (req, res) => {
 
     let uploadedImages = [];
     let images = req.files.images;
-    console.log("Images : ", images);
 
     // Ensure images is an array
     if (!Array.isArray(images)) {

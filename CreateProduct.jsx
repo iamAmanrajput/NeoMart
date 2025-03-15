@@ -21,7 +21,6 @@ import { CardFooter } from "@/components/ui/card";
 import { toast } from "sonner";
 import useErrorLogout from "@/hooks/use-error-logout";
 import axios from "axios";
-import Loader from "@/components/custom/Loader";
 
 const CreateProduct = () => {
   const [currentColor, setCurrentColor] = useState("#000000");
@@ -110,10 +109,6 @@ const CreateProduct = () => {
       );
       if (response.data.success) {
         toast(response.data.message);
-        e.target.reset();
-        setImages([]);
-        setColors([]);
-        setCurrentColor("#000000");
       } else {
         toast.error(response.data.message);
       }
@@ -297,7 +292,8 @@ const CreateProduct = () => {
         </div>
         <CardFooter className="mt-4">
           <Button type="submit" className="w-full " disabled={isLoading}>
-            {isLoading ? <Loader /> : "Add Product"}
+            {isLoading && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
+            {isLoading ? "Adding Product..." : "Add Product"}
           </Button>
         </CardFooter>
       </form>
