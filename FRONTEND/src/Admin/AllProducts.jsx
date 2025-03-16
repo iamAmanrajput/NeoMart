@@ -102,33 +102,35 @@ const AllProducts = () => {
           No Products Found, Try Adjusting your search or category
         </p>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mx-auto sm:mx-0">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-8 max-w-[1600px] mx-auto">
           {products?.map((product) => (
             <Card
               key={product._id}
-              className="flex flex-col w-full sm:w-[22vw] pt-0"
+              className="flex flex-col w-full overflow-hidden hover:shadow-lg transition-shadow duration-300"
             >
-              <div className="h-[12rem] relative">
+              <div className="h-52 sm:h-64 relative">
                 <img
                   src={product.image.url}
                   alt={product.name}
                   className="rounded-t-lg w-full h-full object-cover"
                 />
               </div>
-              <CardContent className="flex-grow">
-                <h2 className="text-lg font-semibold mb-2">{product.name}</h2>
-                <p className="text-sm text-gray-600 mb-4">
+              <CardContent className="flex-grow p-5">
+                <h2 className="text-xl font-semibold mb-3 line-clamp-1">
+                  {product.name}
+                </h2>
+                <p className="text-sm text-gray-600 mb-4 line-clamp-2">
                   {product.description}
                 </p>
-                <p className="text-lg font-bold">
+                <p className="text-xl font-bold">
                   ₹ {product.price.toFixed(2)}
                 </p>
               </CardContent>
-              <CardFooter className=" pt-0 flex justify-between">
-                <Button variant="outline">
-                  <Edit className="mr-2 h-4 s-4" /> Edit
+              <CardFooter className="p-5 pt-0 flex justify-between gap-3">
+                <Button variant="outline" className="flex-1">
+                  <Edit className="mr-2 h-4 w-4" /> Edit
                 </Button>
-                <Button>Blacklist Product</Button>
+                <Button className="flex-1">Blacklist</Button>
               </CardFooter>
             </Card>
           ))}
