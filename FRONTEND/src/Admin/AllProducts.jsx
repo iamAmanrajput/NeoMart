@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
@@ -24,8 +24,31 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
+import { toast } from "sonner";
+import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { setProducts } from "@/redux/slices/productSlice";
 
 const AllProducts = () => {
+  const { products } = useSelector((state) => state.product);
+
+  const [category, setCategory] = useState("all");
+  const [searchTerm, setSearchTerm] = useState("");
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const getFilterProducts = async () => {
+      const response = await axios.get(
+        `${
+          import.meta.env.VITE_API_URL
+        }/product/get-products?category=${category}&search=${searchTerm}`
+      );
+      const data = response.data;
+      dispatch(setProducts(data.data));
+    };
+    getFilterProducts();
+  }, [searchTerm, category]);
+
   return (
     <div className="mx-auto px-4 sm:px-8 -z-10">
       <h1 className="font-bold text-3xl mb-8">Our Products</h1>
@@ -44,6 +67,8 @@ const AllProducts = () => {
                 id="search"
                 placeholder="sort by name and description"
                 className="pl-10"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
               />
               <Search
                 size="20"
@@ -58,46 +83,57 @@ const AllProducts = () => {
             >
               Categrory
             </label>
-            <Select>
+            <Select value={category} onValueChange={setCategory}>
               <SelectTrigger id="category">
                 <SelectValue placeholder="Select a category" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Categories</SelectItem>
                 <SelectItem value="headset">Headset</SelectItem>
-                <SelectItem value="keyword">Keyboard</SelectItem>
+                <SelectItem value="keyboard">Keyboard</SelectItem>
                 <SelectItem value="mouse">Mouse</SelectItem>
               </SelectContent>
             </Select>
           </div>
         </form>
       </div>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mx-auto sm:mx-0">
-        <Card className="flex flex-col w-full sm:w-[22vw] pt-0">
-          <div className="h-[12rem] relative">
-            <img
-              src="https://images.pexels.com/photos/29782661/pexels-photo-29782661/free-photo-of-beautiful-kyoto-yasaka-pagoda-in-historic-district.jpeg?auto=compress&cs=tinysrgb&w=600&lazy=load"
-              alt=""
-              className="rounded-t-lg w-full h-full object-cover"
-            />
-          </div>
-          <CardContent className="flex-grow">
-            <h2 className="text-lg font-semibold mb-2">Mac Laptop</h2>
-            <p className="text-sm text-gray-600 mb-4">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Minus,
-              quasi!
-            </p>
-            <p className="text-lg font-bold">₹500.00</p>
-          </CardContent>
-          <CardFooter className=" pt-0 flex justify-between">
-            <Button variant="outline">
-              <Edit className="mr-2 h-4 s-4" /> Edit
-            </Button>
-            <Button>Blacklist Product</Button>
-          </CardFooter>
-        </Card>
-      </div>
+      {products?.length === 0 ? (
+        <p className="text-center text-gray-500 mt-8">
+          No Products Found, Try Adjusting your search or category
+        </p>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mx-auto sm:mx-0">
+          {products?.map((product) => (
+            <Card
+              key={product._id}
+              className="flex flex-col w-full sm:w-[22vw] pt-0"
+            >
+              <div className="h-[12rem] relative">
+                <img
+                  src={product.image.url}
+                  alt={product.name}
+                  className="rounded-t-lg w-full h-full object-cover"
+                />
+              </div>
+              <CardContent className="flex-grow">
+                <h2 className="text-lg font-semibold mb-2">{product.name}</h2>
+                <p className="text-sm text-gray-600 mb-4">
+                  {product.description}
+                </p>
+                <p className="text-lg font-bold">
+                  ₹ {product.price.toFixed(2)}
+                </p>
+              </CardContent>
+              <CardFooter className=" pt-0 flex justify-between">
+                <Button variant="outline">
+                  <Edit className="mr-2 h-4 s-4" /> Edit
+                </Button>
+                <Button>Blacklist Product</Button>
+              </CardFooter>
+            </Card>
+          ))}
+        </div>
+      )}
 
       <Dialog>
         <DialogContent className="sm-max-w-[425px]">
