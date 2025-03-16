@@ -1,37 +1,44 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { starGenerator } from "@/constants/Helper";
 import { Circle, Minus, Plus } from "lucide-react";
 import { Colors } from "@/constants/colors";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import ReviewComponent from "@/components/custom/ReviewComponent";
+import { useParams } from "react-router-dom";
+import axios from "axios";
 
 const Product = () => {
+  const { productName } = useParams();
+
+  const [product, setProduct] = useState({});
+  const [selectedImage, setSelectedImage] = useState(0);
+  const [productColor, setProductColor] = useState("");
+
   const [productQuantity, setProductQuantity] = useState(5);
   const [pincode, setPincode] = useState("");
   const [availabilityMessage, setAvailabilityMessage] = useState("");
   const [purchaseProduct, setPurchaseProduct] = useState(false);
   const [address, setAddress] = useState("");
-  const imageArray = [
-    {
-      url: "https://res.cloudinary.com/dmljeib0i/image/upload/v1737486186/products/l8hine0k4jwlw9jmujvz.jpg",
-      id: 1,
-    },
-    {
-      url: "https://res.cloudinary.com/dmljeib0i/image/upload/v1737486186/products/l8hine0k4jwlw9jmujvz.jpg",
-      id: 2,
-    },
-    {
-      url: "https://res.cloudinary.com/dmljeib0i/image/upload/v1737486186/products/l8hine0k4jwlw9jmujvz.jpg",
-      id: 3,
-    },
-    {
-      url: "https://res.cloudinary.com/dmljeib0i/image/upload/v1737486186/products/l8hine0k4jwlw9jmujvz.jpg",
-      id: 4,
-    },
-  ];
 
   const productStock = 10;
+
+  useEffect(() => {
+    const fetchProductByName = async () => {
+      try {
+        const res = await axios.get(
+          `${import.meta.env.VITE_API_URL}/product/get-product/${productName}`
+        );
+        const { data } = res.data;
+        setProduct(data);
+      } catch (error) {
+        toast.error(error.response.data.message);
+      }
+    };
+    fetchProductByName();
+  }, [productName]);
+
+  const calculateEmi = (price) => Math.round(price / 6);
 
   return (
     <div>
@@ -40,14 +47,15 @@ const Product = () => {
           {/* left side */}
           <div className="grid sm:w-[50%] gap-3">
             <img
-              src={imageArray[0].url}
+              src={product?.images?.[selectedImage]?.url}
               className="w-full lg:[30rem] rounded-xl object-center object-cover border dark:border-none "
             />
             <div className="grid grid-cols-4 gap-3">
-              {imageArray.map((image) => (
+              {product?.images?.map(({ url, id }, index) => (
                 <img
-                  key={image.id}
-                  src={image.url}
+                  key={id}
+                  src={url}
+                  onClick={() => setSelectedImage(index)}
                   className="rounded-xl filter hover:brightness-50 cursor-pointer transition-all ease-in-out duration-300 border dark:border-none"
                 />
               ))}
@@ -57,20 +65,19 @@ const Product = () => {
           {/* right side */}
           <div className="sm:w-[50%] lg:w-[30%]">
             <div className="pb-5">
-              <h className="font-extrabold text-2xl">My Keyboard</h>
-              <p className="my-2 text-sm">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Odio
-                pariatur, neque voluptates quam minus repellendus deleniti
-                praesentium minima sed commodi ab molestias, dolore eaque? Et
-                ipsa incidunt odio perferendis!
-              </p>
+              <h1 className="font-extrabold text-2xl">{product?.name}</h1>
+              <p className="my-2 text-sm">{product?.description}</p>
               <div className="flex items-center">
-                {starGenerator(4.5, "0", 15)}
-                <span className="text-md ml-1">(2)</span>
+                {starGenerator(product?.rating, "0", 15)}
+                <span className="text-md ml-1">
+                  ({product?.reviews?.length})
+                </span>
               </div>
             </div>
             <div className="py-5 border-t border-b">
-              <h3 className="font-bold text-xl">Rs.500 or Rs.35/month</h3>
+              <h3 className="font-bold text-xl">
+                Rs.{product?.price} or Rs.{calculateEmi(product?.price)}/month
+              </h3>
               <p className="text-sm">
                 Suggested payments with 6 months special financing
               </p>
@@ -78,24 +85,17 @@ const Product = () => {
             <div className="py-5 border-t border-b">
               <h3 className="font-bold text-xl">Choose Color</h3>
               <div className="flex items-center my-2">
-                <Circle
-                  fill={Colors.customIsabelline}
-                  strokeOpacity={0.2}
-                  strokeWidth={0.2}
-                  size={40}
-                />
-                <Circle
-                  fill={Colors.customGray}
-                  strokeOpacity={0.2}
-                  strokeWidth={0.2}
-                  size={40}
-                />
-                <Circle
-                  fill={Colors.customYellow}
-                  strokeOpacity={0.2}
-                  strokeWidth={0.2}
-                  size={40}
-                />
+                {product?.colors?.map((color, index) => (
+                  <Circle
+                    key={index}
+                    className="cursor-pointer filter hover:brightness-50 "
+                    onClick={() => setProductColor(color)}
+                    fill={color}
+                    strokeOpacity={0.2}
+                    strokeWidth={0.2}
+                    size={40}
+                  />
+                ))}
               </div>
             </div>
 
@@ -120,12 +120,12 @@ const Product = () => {
                     stroke={Colors.customGray}
                   />
                 </div>
-                {productStock - productQuantity > 0 && (
+                {product.stock - productQuantity > 0 && (
                   <div className="grid text-sm font-semibold text-gray-600">
                     <span>
                       Only{" "}
                       <span className="text-customYellow">
-                        {productStock - productQuantity} items{" "}
+                        {product.stock - productQuantity} items{" "}
                       </span>
                       left!
                     </span>

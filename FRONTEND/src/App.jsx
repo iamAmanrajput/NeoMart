@@ -56,7 +56,7 @@ const App = () => {
         ></Route>
 
         <Route
-          path="/product"
+          path="/product/:productName"
           element={
             <RootLayout>
               <Product />

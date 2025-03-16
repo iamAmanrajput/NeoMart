@@ -208,7 +208,8 @@ exports.getProducts = async (req, res) => {
 exports.getProductByName = async (req, res) => {
   try {
     const { name } = req.params;
-    const product = await Product.findOne({ name });
+    let newname = name?.split("-").join(" ");
+    const product = await Product.findOne({ name: newname });
     if (!product) {
       return res.status(404).json({
         success: false,
