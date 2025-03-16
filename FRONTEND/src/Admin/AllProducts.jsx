@@ -28,13 +28,73 @@ import { toast } from "sonner";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { setProducts } from "@/redux/slices/productSlice";
+import useErrorLogout from "@/hooks/use-error-logout";
+import Loader from "@/components/custom/Loader";
 
 const AllProducts = () => {
   const { products } = useSelector((state) => state.product);
+  const { handleErrorLogout } = useErrorLogout();
 
   const [category, setCategory] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
+  const [isEditModelOpen, setIsEditModelOpen] = useState(false);
+  const [editingProduct, setEditingProduct] = useState(null);
+  const [blacklistedProduct, setBlacklistedProduct] = useState(false);
+  const [blaclistLoading, setBlaclistLoading] = useState(false);
+
   const dispatch = useDispatch();
+
+  const blacklistProduct = async (id) => {
+    setBlaclistLoading(true);
+    try {
+      const res = await axios.put(
+        `${import.meta.env.VITE_API_URL}/product/blacklist-product/${id}`,
+        null,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      const { success, data, message } = res;
+      if (success) {
+        toast(message);
+        setBlacklistedProduct(true);
+      } else {
+        toast.error(toast.message);
+      }
+    } catch (error) {
+      handleErrorLogout(error, "Error Occured while Blacklisting Product");
+    } finally {
+      setBlaclistLoading(false);
+    }
+  };
+
+  const whitelistProduct = async (id) => {
+    setBlaclistLoading(true);
+    try {
+      const res = await axios.put(
+        `${import.meta.env.VITE_API_URL}/product/remove-from-blacklist/${id}`,
+        null,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      const { success, data, message } = res;
+      if (success) {
+        toast(message);
+        setBlacklistedProduct(false);
+      } else {
+        toast.error(toast.message);
+      }
+    } catch (error) {
+      handleErrorLogout(error, "Error Occured while whiteList Product");
+    } finally {
+      setBlaclistLoading(false);
+    }
+  };
 
   useEffect(() => {
     const getFilterProducts = async () => {
@@ -130,7 +190,27 @@ const AllProducts = () => {
                 <Button variant="outline" className="flex-1">
                   <Edit className="mr-2 h-4 w-4" /> Edit
                 </Button>
-                <Button className="flex-1">Blacklist</Button>
+                {blaclistLoading ? (
+                  <Loader />
+                ) : blacklistedProduct ? (
+                  <Button
+                    className="flex-1 cursor-pointer"
+                    onClick={() => {
+                      return whitelistProduct(product._id);
+                    }}
+                  >
+                    Whitelist
+                  </Button>
+                ) : (
+                  <Button
+                    className="flex-1 cursor-pointer"
+                    onClick={() => {
+                      return blacklistProduct(product._id);
+                    }}
+                  >
+                    Blacklist
+                  </Button>
+                )}
               </CardFooter>
             </Card>
           ))}
