@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 
 import {
@@ -8,15 +8,34 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import axios from "axios";
+import { useDispatch } from "react-redux";
+import { setProducts } from "@/redux/slices/productSlice";
 
 const FilterMenu = () => {
   const [category, setCategory] = useState("");
   const [price, setPrice] = useState("");
   const [search, setSearch] = useState("");
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const getFilteredProducts = async () => {
+      const res = await axios.get(
+        `${
+          import.meta.env.VITE_API_URL
+        }/product/get-products?category=${category}&price=${price}&search=${search}`
+      );
+      const data = res.data;
+      if (data.success) {
+        dispatch(setProducts(data.data));
+      }
+    };
+    getFilteredProducts();
+  }, [category, price, search]);
 
   const categoryData = {
     trigger: "Category",
-    items: ["keyboard", "mouse", "headset"],
+    items: ["Keyboard", "Mouse", "Headset"],
   };
 
   const priceData = {

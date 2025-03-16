@@ -42,6 +42,11 @@ const productSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    category: {
+      type: String,
+      required: true,
+      enum: ["Keyboard", "Mouse", "Headset"],
+    },
   },
   { timestamps: true }
 );
