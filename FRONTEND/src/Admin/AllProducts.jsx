@@ -39,15 +39,28 @@ const AllProducts = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [isEditModelOpen, setIsEditModelOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
-  const [blacklistedProduct, setBlacklistedProduct] = useState(false);
-  const [blaclistLoading, setBlaclistLoading] = useState(false);
+  const [loadingProductId, setLoadingProductId] = useState(null);
 
   const dispatch = useDispatch();
 
-  const blacklistProduct = async (id) => {
-    setBlaclistLoading(true);
+  const getFilterProducts = async () => {
     try {
-      const res = await axios.put(
+      const response = await axios.get(
+        `${
+          import.meta.env.VITE_API_URL
+        }/product/get-products?category=${category}&search=${searchTerm}`
+      );
+      const data = response.data;
+      dispatch(setProducts(data.data));
+    } catch (error) {
+      handleErrorLogout(error, "Error fetching products");
+    }
+  };
+
+  const blacklistProduct = async (id) => {
+    setLoadingProductId(id);
+    try {
+      const response = await axios.put(
         `${import.meta.env.VITE_API_URL}/product/blacklist-product/${id}`,
         null,
         {
@@ -56,24 +69,23 @@ const AllProducts = () => {
           },
         }
       );
-      const { success, data, message } = res;
-      if (success) {
-        toast(message);
-        setBlacklistedProduct(true);
+      if (response.data.success) {
+        toast.success(response.data.message);
+        getFilterProducts();
       } else {
-        toast.error(toast.message);
+        toast.error(response.data.message);
       }
     } catch (error) {
-      handleErrorLogout(error, "Error Occured while Blacklisting Product");
+      handleErrorLogout(error, "Error occurred while blacklisting product");
     } finally {
-      setBlaclistLoading(false);
+      setLoadingProductId(null);
     }
   };
 
   const whitelistProduct = async (id) => {
-    setBlaclistLoading(true);
+    setLoadingProductId(id);
     try {
-      const res = await axios.put(
+      const response = await axios.put(
         `${import.meta.env.VITE_API_URL}/product/remove-from-blacklist/${id}`,
         null,
         {
@@ -82,32 +94,75 @@ const AllProducts = () => {
           },
         }
       );
-      const { success, data, message } = res;
-      if (success) {
-        toast(message);
-        setBlacklistedProduct(false);
+      if (response.data.success) {
+        toast.success(response.data.message);
+        getFilterProducts();
       } else {
-        toast.error(toast.message);
+        toast.error(response.data.message);
       }
     } catch (error) {
-      handleErrorLogout(error, "Error Occured while whiteList Product");
+      handleErrorLogout(error, "Error occurred while whitelisting product");
     } finally {
-      setBlaclistLoading(false);
+      setLoadingProductId(null);
     }
   };
 
   useEffect(() => {
-    const getFilterProducts = async () => {
-      const response = await axios.get(
-        `${
-          import.meta.env.VITE_API_URL
-        }/product/get-products?category=${category}&search=${searchTerm}`
-      );
-      const data = response.data;
-      dispatch(setProducts(data.data));
-    };
     getFilterProducts();
   }, [searchTerm, category]);
+
+  const handleEdit = (product) => {
+    setEditingProduct(product);
+    setIsEditModelOpen(true);
+  };
+
+  const handleEditSubmit = async (e) => {
+    e.preventDefault();
+    const formdata = new FormData(e.currentTarget);
+    const updatedProduct = {
+      ...editingProduct,
+      name: formdata.get("name"),
+      description: formdata.get("description"),
+      price: parseFloat(formdata.get("price")),
+      category: formdata.get("category"),
+    };
+    dispatch(
+      setProducts(
+        products.map((p) => (p._id === updatedProduct._id ? updatedProduct : p))
+      )
+    );
+
+    try {
+      const res = await axios.put(
+        `${import.meta.env.VITE_API_URL}/product/update-product/${
+          editingProduct._id
+        }`,
+        {
+          name: updatedProduct.name,
+          description: updatedProduct.description,
+          price: updatedProduct.price,
+          category: updatedProduct.category,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+
+      const { success, message } = res.data;
+      if (success) {
+        toast(message);
+      } else {
+        toast(message);
+      }
+    } catch (error) {
+      return handleErrorLogout(error, "Error Occured While Updating Product");
+    }
+
+    setIsEditModelOpen(false);
+    setEditingProduct(null);
+  };
 
   return (
     <div className="mx-auto px-4 sm:px-8 -z-10">
@@ -187,26 +242,28 @@ const AllProducts = () => {
                 </p>
               </CardContent>
               <CardFooter className="p-5 pt-0 flex justify-between gap-3">
-                <Button variant="outline" className="flex-1">
+                <Button
+                  variant="outline"
+                  onClick={() => handleEdit(product)}
+                  className="flex-1"
+                >
                   <Edit className="mr-2 h-4 w-4" /> Edit
                 </Button>
-                {blaclistLoading ? (
-                  <Loader />
-                ) : blacklistedProduct ? (
+                {loadingProductId === product._id ? (
+                  <Button disabled className="flex-1">
+                    <Loader className="mr-2" />
+                  </Button>
+                ) : product.blacklisted ? (
                   <Button
-                    className="flex-1 cursor-pointer"
-                    onClick={() => {
-                      return whitelistProduct(product._id);
-                    }}
+                    className="flex-1"
+                    onClick={() => whitelistProduct(product._id)}
                   >
                     Whitelist
                   </Button>
                 ) : (
                   <Button
-                    className="flex-1 cursor-pointer"
-                    onClick={() => {
-                      return blacklistProduct(product._id);
-                    }}
+                    className="flex-1"
+                    onClick={() => blacklistProduct(product._id)}
                   >
                     Blacklist
                   </Button>
@@ -217,31 +274,46 @@ const AllProducts = () => {
         </div>
       )}
 
-      <Dialog>
+      <Dialog open={isEditModelOpen} onOpenChange={setIsEditModelOpen}>
         <DialogContent className="sm-max-w-[425px]">
           <DialogHeader>
             <DialogTitle>Edit Product</DialogTitle>
           </DialogHeader>
-          <form>
+          <form onSubmit={handleEditSubmit}>
             <div className="grid gap-4 py-4">
               <div className="grid gap-4 items-center">
                 <Label htmlFor="name">Name</Label>
-                <Input id="name" name="name" type="text" />
+                <Input
+                  id="name"
+                  name="name"
+                  type="text"
+                  defaultValue={editingProduct?.name}
+                />
               </div>
 
               <div className="grid gap-4 items-center">
                 <Label htmlFor="description">Description</Label>
-                <Textarea id="description" name="description" type="text" />
+                <Textarea
+                  id="description"
+                  name="description"
+                  type="text"
+                  defaultValue={editingProduct?.description}
+                />
               </div>
 
               <div className="grid gap-4 items-center">
                 <Label htmlFor="price">price</Label>
-                <Input id="price" name="price" type="number" />
+                <Input
+                  id="price"
+                  name="price"
+                  type="number"
+                  defaultValue={editingProduct?.price}
+                />
               </div>
 
               <div className="grid gap-4 items-center">
                 <Label htmlFor="category">Category</Label>
-                <Select name="category">
+                <Select name="category" defaultValue={editingProduct?.category}>
                   <SelectTrigger>
                     <SelectValue placeholder="Select a category" />
                   </SelectTrigger>
