@@ -22,7 +22,7 @@ const CartProduct = ({
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { isAuthenticated } = useSelector((state) => state.auth);
-  const { generatePayment } = useRazorpay();
+  const { generatePayment, verifyPayment } = useRazorpay();
 
   const handleBuyNow = async () => {
     if (!isAuthenticated) {
@@ -44,6 +44,11 @@ const CartProduct = ({
     }
 
     const order = await generatePayment(price * quantity);
+    await verifyPayment(
+      order,
+      [{ id: _id, quantity, color }],
+      "123 Main Street"
+    );
   };
 
   return (

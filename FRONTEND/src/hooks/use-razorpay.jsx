@@ -56,6 +56,7 @@ const useRazorpay = () => {
             {
               razorpay_order_id: options.id,
               razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
               amount: options.amount,
               address,
               productArray,

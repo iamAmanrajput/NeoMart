@@ -10,18 +10,20 @@ import axios from "axios";
 import { toast } from "sonner";
 import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "@/redux/slices/cartSlice";
+import useRazorpay from "@/hooks/use-razorpay";
 
 const Product = () => {
   const { productName } = useParams();
   const { isAuthenticated } = useSelector((state) => state.auth);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { generatePayment, verifyPayment } = useRazorpay();
 
   const [product, setProduct] = useState({});
   const [selectedImage, setSelectedImage] = useState(0);
   const [productColor, setProductColor] = useState("");
 
-  const [productQuantity, setProductQuantity] = useState(5);
+  const [productQuantity, setProductQuantity] = useState(1);
   const [pincode, setPincode] = useState("");
   const [availabilityMessage, setAvailabilityMessage] = useState("");
   const [purchaseProduct, setPurchaseProduct] = useState(false);
@@ -91,6 +93,34 @@ const Product = () => {
 
     setProductQuantity(1);
     toast("Product Added to Cart");
+  };
+
+  const handleBuyNow = async () => {
+    if (!isAuthenticated) {
+      toast.error("Please log in first to purchase this product.");
+      navigate("/login");
+      return;
+    }
+    if (productQuantity > product.stock) {
+      toast.error("Product Out of stock");
+      return;
+    }
+    if (product.blacklisted) {
+      toast.error("Product isn't available for purchase");
+      return;
+    }
+    if (productColor == "") {
+      toast.error("Please Select a Color");
+      return;
+    }
+
+    const order = await generatePayment(product.price * productQuantity);
+    await verifyPayment(
+      order,
+      [{ id: product._id, quantity: productQuantity, color: productColor }],
+      address
+    );
+    setPurchaseProduct(false);
   };
 
   return (
@@ -213,7 +243,7 @@ const Product = () => {
                     placeholder="Enter Your Address Here..."
                     onChange={(e) => setAddress(e.target.value)}
                   />
-                  <Button>Confirm Order</Button>
+                  <Button onClick={handleBuyNow}>Confirm Order</Button>
                 </div>
               )}
             </div>
