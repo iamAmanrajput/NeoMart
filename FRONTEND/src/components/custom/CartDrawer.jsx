@@ -14,6 +14,7 @@ import { ShoppingCart } from "lucide-react";
 import { Badge } from "../ui/badge";
 import { useSelector } from "react-redux";
 import CartProduct from "./CartProduct";
+import LinkButton from "./LinkButton";
 
 const CartDrawer = () => {
   const { cartItems, totalQuantity, totalPrice } = useSelector(
@@ -41,7 +42,7 @@ const CartDrawer = () => {
         </DrawerHeader>
         <div className="flex flex-col sm:flex-row justify-start gap-3 h-[70vh] overflow-y-scroll sm:overflow-y-hidden sm:h-auto mx-3">
           {cartItems.length === 0 ? (
-            <h2 className="text-primary text-3xl">
+            <h2 className="text-primary text-sm">
               Nothing To Show, Please add some products...
             </h2>
           ) : (
@@ -49,7 +50,7 @@ const CartDrawer = () => {
           )}
         </div>
         <DrawerFooter>
-          <Button>Checkout</Button>
+          <LinkButton to="/checkout" text="Checkout" />
         </DrawerFooter>
       </DrawerContent>
     </Drawer>

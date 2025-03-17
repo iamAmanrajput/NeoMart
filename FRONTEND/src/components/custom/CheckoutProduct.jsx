@@ -14,7 +14,7 @@ const CheckoutProduct = ({
   return (
     <div className="flex justify-between items-center p-3 rounded-lg bg-gray-100 dark:bg-zinc-900">
       <div className="flex flex-row items-center gap-2">
-        <img src={image.url} alt={name} className="w-20 sm:w-24 rounded-lg" />
+        <img src={image} alt={name} className="w-20 sm:w-24 rounded-lg" />
         <div className="grid sm:gap-1">
           <h1 className="font-semibold text-sm sm:text-base">{name}</h1>
           <p className="flex flex-col sm:flex-row sm:gap-2 text-gray-500 dark:text-customGray text-xs sm:text-sm my-0">
