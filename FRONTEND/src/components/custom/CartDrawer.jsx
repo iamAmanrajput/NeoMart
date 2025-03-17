@@ -12,14 +12,18 @@ import {
 } from "@/components/ui/drawer";
 import { ShoppingCart } from "lucide-react";
 import { Badge } from "../ui/badge";
+import { useSelector } from "react-redux";
+import CartProduct from "./CartProduct";
 
 const CartDrawer = () => {
-  const totalItems = 5;
+  const { cartItems, totalQuantity, totalPrice } = useSelector(
+    (state) => state.cart
+  );
   return (
     <Drawer>
       <DrawerTrigger className="relative">
-        {totalItems > 0 && (
-          <Badge className={`absolute px-1 py-0`}>{totalItems}</Badge>
+        {totalQuantity > 0 && (
+          <Badge className={`absolute px-1 py-0`}>{totalQuantity}</Badge>
         )}
         <ShoppingCart
           className="text-gray-800 dark:text-white hover:scale-105 cursor-pointer transition-all ease-in-out"
@@ -31,10 +35,19 @@ const CartDrawer = () => {
         <DrawerHeader>
           <DrawerTitle>Are you absolutely sure?</DrawerTitle>
           <DrawerDescription>
-            Total Items : {totalItems} <br />
-            Total Price : ₹ 500
+            Total Items : {totalQuantity} <br />
+            Total Price : ₹ {totalPrice}
           </DrawerDescription>
         </DrawerHeader>
+        <div className="flex flex-col sm:flex-row justify-start gap-3 h-[70vh] overflow-y-scroll sm:overflow-y-hidden sm:h-auto mx-3">
+          {cartItems.length === 0 ? (
+            <h2 className="text-primary text-3xl">
+              Nothing To Show, Please add some products...
+            </h2>
+          ) : (
+            cartItems.map((item) => <CartProduct key={item._id} {...item} />)
+          )}
+        </div>
         <DrawerFooter>
           <Button>Checkout</Button>
         </DrawerFooter>

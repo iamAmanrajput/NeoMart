@@ -5,11 +5,17 @@ import { Colors } from "@/constants/colors";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import ReviewComponent from "@/components/custom/ReviewComponent";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
+import { toast } from "sonner";
+import { useDispatch, useSelector } from "react-redux";
+import { addToCart } from "@/redux/slices/cartSlice";
 
 const Product = () => {
   const { productName } = useParams();
+  const { isAuthenticated } = useSelector((state) => state.auth);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const [product, setProduct] = useState({});
   const [selectedImage, setSelectedImage] = useState(0);
@@ -39,6 +45,53 @@ const Product = () => {
   }, [productName]);
 
   const calculateEmi = (price) => Math.round(price / 6);
+
+  const checkAvailability = async () => {
+    if (pincode.trim() === "") {
+      setAvailabilityMessage("please Enter a valid Pincode");
+      return;
+    }
+    try {
+      const res = await axios.get(
+        `${import.meta.env.VITE_API_URL}/pincode/${pincode}`
+      );
+      const data = res.data;
+      if (data.success) {
+        setAvailabilityMessage(data.message);
+      } else {
+        setAvailabilityMessage(data.message);
+      }
+    } catch (error) {
+      toast.error(error.response.data.message);
+    }
+  };
+
+  const handleAddToCart = () => {
+    if (!isAuthenticated) {
+      navigate("/login");
+      toast.error("Please Login To Add Items in Cart");
+      return;
+    }
+    if (productColor == "") {
+      toast.error("Please Select the color");
+      return;
+    }
+    dispatch(
+      addToCart({
+        _id: product._id,
+        name: product.name,
+        price: product.price,
+        quantity: productQuantity,
+        image: product.images[0].url,
+        color: productColor,
+        stock: product.stock,
+        blacklisted: product.blacklisted,
+      })
+    );
+
+    setProductQuantity(1);
+    toast("Product Added to Cart");
+  };
 
   return (
     <div>
@@ -140,7 +193,9 @@ const Product = () => {
                     placeholder="Enter Your PinCode Here"
                     onChange={(e) => setPincode(e.target.value)}
                   />
-                  <Button>Check Availability</Button>
+                  <Button onClick={checkAvailability}>
+                    Check Availability
+                  </Button>
                 </div>
                 <p className="text-sm px-2">{availabilityMessage}</p>
               </div>
@@ -148,7 +203,9 @@ const Product = () => {
                 <Button onClick={() => setPurchaseProduct(true)}>
                   Buy Now
                 </Button>
-                <Button>Add To Cart</Button>
+                <Button variant="outline" onClick={handleAddToCart}>
+                  Add To Cart
+                </Button>
               </div>
               {purchaseProduct && (
                 <div className="my-2 space-y-2">
