@@ -4,9 +4,12 @@ require("dotenv").config();
 const User = require("../models/user");
 const Product = require("../models/product");
 const Order = require("../models/order");
+var {
+  validatePaymentVerification,
+} = require("razorpay/dist/utils/razorpay-utils");
 
 // Razorpay instance
-const instance = new Razorpay({
+var instance = new Razorpay({
   key_id: process.env.RAZORPAY_KEY,
   key_secret: process.env.RAZORPAY_SECRET,
 });
@@ -59,7 +62,6 @@ exports.verifyPayment = async (req, res) => {
     const {
       razorpay_order_id,
       razorpay_payment_id,
-      razorpay_signature,
       amount,
       productArray,
       address,
@@ -69,7 +71,6 @@ exports.verifyPayment = async (req, res) => {
     if (
       !razorpay_order_id ||
       !razorpay_payment_id ||
-      !razorpay_signature ||
       !amount ||
       !productArray.length
     ) {
@@ -79,26 +80,40 @@ exports.verifyPayment = async (req, res) => {
     }
 
     // Generate expected signature
-    const expectedSignature = crypto
+    const signature = crypto
       .createHmac("sha256", process.env.RAZORPAY_SECRET)
       .update(`${razorpay_order_id}|${razorpay_payment_id}`)
       .digest("hex");
 
-    // Compare signatures
-    if (razorpay_signature !== expectedSignature) {
+    const validatedPayment = validatePaymentVerification(
+      {
+        order_id: razorpay_order_id,
+        payment_id: razorpay_payment_id,
+      },
+      signature,
+      process.env.RAZORPAY_SECRET
+    );
+
+    if (!validatedPayment) {
       return res
         .status(400)
-        .json({ success: false, message: "Payment Verification Failed" });
+        .json({ success: false, message: "Payment Verification failed" });
     }
 
     // Update User & Product Stock
     for (const product of productArray) {
-      await User.findByIdAndUpdate(userId, {
-        $push: { purchasedProducts: product.id },
-      });
-      await Product.findByIdAndUpdate(product.id, {
-        $inc: { stock: -product.quantity },
-      });
+      await User.findByIdAndUpdate(
+        { _id: userId },
+        {
+          $push: { purchasedProducts: product.id },
+        }
+      );
+      await Product.findByIdAndUpdate(
+        { _id: product.id },
+        {
+          $inc: { stock: -product.quantity },
+        }
+      );
     }
 
     // Create Order
@@ -106,7 +121,7 @@ exports.verifyPayment = async (req, res) => {
       amount: amount / 100, // Convert paise to rupees
       razorpayOrderId: razorpay_order_id,
       razorpayPaymentId: razorpay_payment_id,
-      razorpaySignature: razorpay_signature,
+      razorpaySignature: signature,
       products: productArray,
       address,
       userId,
