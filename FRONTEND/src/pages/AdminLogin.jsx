@@ -109,12 +109,12 @@ const AdminLogin = () => {
             {loading ? <Loader /> : "Login"}
           </Button>
         </form>
-        <p className="text-center text-gray-400 mt-4">
+        {/* <p className="text-center text-gray-400 mt-4">
           Don't have an account?{" "}
           <Link to="/signup" className="text-blue-400">
             Sign Up
           </Link>
-        </p>
+        </p> */}
       </div>
     </div>
   );
