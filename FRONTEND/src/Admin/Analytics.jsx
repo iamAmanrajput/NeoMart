@@ -1,10 +1,36 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { SidebarInset } from "@/components/ui/sidebar";
 import { Activity, CreditCard, DollarSign, User } from "lucide-react";
 import { Chart1 } from "@/components/custom/Chart1";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import useErrorLogout from "@/hooks/use-error-logout";
+import axios from "axios";
 
 const Analytics = () => {
+  const [metrics, setMetrics] = useState([]);
+  const { handleErrorLogout } = useErrorLogout();
+
+  useEffect(() => {
+    const getMetrics = async () => {
+      try {
+        const res = await axios.get(
+          `${import.meta.env.VITE_API_URL}/order/get-metrics`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+        const { data } = res.data;
+        setMetrics(data);
+      } catch (error) {
+        return handleErrorLogout(error);
+      }
+    };
+
+    getMetrics();
+  }, []);
+
   return (
     <div className="w-screen md:w-[75vw] xl:w-[70vw] 2xl:w-[80vw] flex justify-center items-center">
       <SidebarInset>
@@ -16,9 +42,11 @@ const Analytics = () => {
                 <DollarSign size={16} />
               </div>
               <div className="grid mt-2">
-                <span className="text-2xl font-bold">₹4500</span>
+                <span className="text-2xl font-bold">
+                  ₹ {metrics?.totalSales?.count}
+                </span>
                 <span className="text-sm font-semibold text-gray-400">
-                  +80% from last month
+                  + {metrics?.totalSales?.growth.toFixed(2)}% from last month
                 </span>
               </div>
             </div>
@@ -29,9 +57,11 @@ const Analytics = () => {
                 <User size={16} />
               </div>
               <div className="grid mt-2">
-                <span className="text-2xl font-bold">+4</span>
+                <span className="text-2xl font-bold">
+                  + {metrics?.users?.count}
+                </span>
                 <span className="text-sm font-semibold text-gray-400">
-                  +80% from last month
+                  + {metrics?.users?.growth.toFixed(2)}% from last month
                 </span>
               </div>
             </div>
@@ -42,9 +72,11 @@ const Analytics = () => {
                 <CreditCard size={16} />
               </div>
               <div className="grid mt-2">
-                <span className="text-2xl font-bold">₹45004</span>
+                <span className="text-2xl font-bold">
+                  ₹ {metrics?.sales?.count}
+                </span>
                 <span className="text-sm font-semibold text-gray-400">
-                  +80% from last month
+                  + {metrics?.sales?.growth.toFixed(2)}% from last month
                 </span>
               </div>
             </div>
@@ -55,9 +87,11 @@ const Analytics = () => {
                 <Activity size={16} />
               </div>
               <div className="grid mt-2">
-                <span className="text-2xl font-bold">2</span>
+                <span className="text-2xl font-bold">
+                  {metrics?.activeNow?.count}
+                </span>
                 <span className="text-sm font-semibold text-gray-400">
-                  +80% from last month
+                  + {metrics?.activeNow?.growth.toFixed(2)}% from last month
                 </span>
               </div>
             </div>
@@ -72,23 +106,30 @@ const Analytics = () => {
                 You Make 40 sales in this month
               </p>
               <div className="flex flex-1 flex-col gap-4">
-                <div className="h-fit py-1 w-full xl:w-[20rem] rounded-lg flex justify-between items-center">
-                  <div className="flex gap-4">
-                    <Avatar>
-                      <AvatarImage src="https://github.com/shadcn.png" />
-                      <AvatarFallback>CN</AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <h3 className="text-md font-semibold capitalize">
-                        Aman Singh
-                      </h3>
-                      <p className="text-gray-400 text-sm">
-                        aman.it360@gmail.com
-                      </p>
+                {metrics?.recentSales?.users?.map((user, index) => (
+                  <div
+                    key={user._id}
+                    className="h-fit py-1 w-full xl:w-[20rem] rounded-lg flex justify-between items-center"
+                  >
+                    <div className="flex gap-4">
+                      <Avatar>
+                        <AvatarImage src="https://github.com/shadcn.png" />
+                        <AvatarFallback>
+                          {user?.userId?.name?.charAt(0)?.toUpperCase()}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <h3 className="text-md font-semibold capitalize">
+                          {user?.userId?.name}
+                        </h3>
+                        <p className="text-gray-400 text-sm">
+                          {user?.userId?.email}
+                        </p>
+                      </div>
                     </div>
+                    <h3 className="font-bold">₹ {user?.amount}</h3>
                   </div>
-                  <h3 className="font-bold">₹500</h3>
-                </div>
+                ))}
               </div>
             </div>
           </div>
