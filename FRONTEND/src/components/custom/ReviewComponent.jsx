@@ -39,6 +39,7 @@ const ReviewComponent = ({ productId }) => {
         handleErrorLogout(error);
       }
     };
+    getReviews();
   }, [productId]);
 
   const addReview = async () => {
@@ -199,7 +200,7 @@ const ReviewComponent = ({ productId }) => {
               </div>
             </div>
             {/* Review Content */}
-            {user?._id === review?.userId?._id &&
+            {user?.id === review?.userId?._id &&
             editing.status &&
             editing.reviewId === review?._id ? (
               <Input
@@ -266,10 +267,10 @@ const ReviewComponent = ({ productId }) => {
                 </Button>
               </div>
             )}
-            <div className="flex gap-5 justify-center items-center mt-4">
+            <div className="flex gap-5 justify-start items-center mt-4">
               <button
                 onClick={() =>
-                  setReplyingTo(replyingTo === review?._id ? null : review?._id)
+                  setReplyingTo(replyingTo === review._id ? null : review._id)
                 }
                 className="text-sm text-customYellow hover:underline"
               >

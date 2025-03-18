@@ -1,4 +1,4 @@
-const Product = require("../models/product");
+const Product = require("../models/Product");
 const { ROLES } = require("../utils/constants");
 const { uploadImageToCloudinary } = require("../utils/imageUploader");
 
