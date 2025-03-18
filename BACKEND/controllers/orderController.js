@@ -28,6 +28,7 @@ exports.getOrdersByUserId = async (req, res) => {
 
 exports.getAllOrders = async (req, res) => {
   try {
+    // Check if the user is an admin
     if (req.role !== ROLES.admin) {
       return res.status(403).json({
         success: false,
@@ -35,34 +36,43 @@ exports.getAllOrders = async (req, res) => {
       });
     }
 
-    const { page, limit } = req;
-    const orders = await Order.find()
+    // Convert query params to numbers and provide defaults
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 10;
+
+    console.log(page, limit);
+
+    // Fetch orders with pagination and populate related fields
+    const orders = await Order.find({})
       .populate({
-        path: "product.id",
+        path: "products.id",
         select: "name price category images",
       })
       .populate({
         path: "userId",
         select: "name email",
       })
-      .limit(limit * 1)
+      .limit(limit)
       .skip((page - 1) * limit)
-      .sort({ createdAt: -1 }); // latest order sabse pehle dikhega
+      .sort({ createdAt: -1 }); // Show latest orders first
 
-    if (!orders) {
+    // Check if no orders exist
+    if (orders.length === 0) {
       return res.status(404).json({
         success: false,
         message: "No Orders to Show",
       });
     }
 
+    // Count total number of orders
     const count = await Order.countDocuments();
 
+    // Send success response
     return res.status(200).json({
-      success: false,
+      success: true, // Changed from false to true
       data: orders,
       totalPages: Math.ceil(count / limit),
-      currentPage: Number(page),
+      currentPage: page,
     });
   } catch (error) {
     return res.status(500).json({
@@ -82,9 +92,9 @@ exports.updateOrderStatus = async (req, res) => {
     }
     const { paymentId } = req.params;
     const { status } = req.body;
-    const order = Order.findOneAndUpdate(
+    const order = await Order.findOneAndUpdate(
       { razorpayPaymentId: paymentId },
-      { status },
+      { status: String(status) },
       { new: true }
     );
     if (!order) {

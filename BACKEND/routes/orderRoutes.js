@@ -13,6 +13,6 @@ const {
 router.get("/get-order", isLoggedIn, getOrdersByUserId);
 router.get("/get-orders", isLoggedIn, getAllOrders);
 router.get("/get-metrics", isLoggedIn, getMetrics);
-router.put("/udate-status/:paymentId", isLoggedIn, updateOrderStatus);
+router.put("/update-status/:paymentId", isLoggedIn, updateOrderStatus);
 
 module.exports = router;
