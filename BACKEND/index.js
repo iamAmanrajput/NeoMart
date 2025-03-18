@@ -31,6 +31,7 @@ app.get("/", (req, res) => {
 app.use("/api/v1/user", require("./routes/authRoutes"));
 app.use("/api/v1/pincode", require("./routes/pincodeRoutes"));
 app.use("/api/v1/payment", require("./routes/paymentRoutes"));
+app.use("/api/v1/review", require("./routes/reviewRoutes"));
 
 //admin routes
 app.use("/api/v1/admin", require("./routes/adminRoutes"));

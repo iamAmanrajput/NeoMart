@@ -1,7 +1,7 @@
 const Review = require("../models/Review");
 const Product = require("../models/Product");
 const User = require("../models/User");
-const { ROLES } = require("../config/constants");
+const { ROLES } = require("../utils/constants");
 
 exports.createReview = async (req, res) => {
   try {
@@ -175,13 +175,11 @@ exports.getReviews = async (req, res) => {
         .json({ success: false, message: "Reviews Not Found" });
     }
 
-    return res
-      .status(200)
-      .json({
-        success: true,
-        data: reviews,
-        message: "Reviews Fetched Successfully",
-      });
+    return res.status(200).json({
+      success: true,
+      data: reviews,
+      message: "Reviews Fetched Successfully",
+    });
   } catch (error) {
     return res.status(500).json({
       success: false,

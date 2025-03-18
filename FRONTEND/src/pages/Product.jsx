@@ -250,7 +250,7 @@ const Product = () => {
           </div>
         </main>
         {/* review section */}
-        <ReviewComponent></ReviewComponent>
+        <ReviewComponent productId={product?._id}></ReviewComponent>
       </div>
     </div>
   );
