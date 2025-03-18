@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const Review = require("./Review");
+const Review = require("./review");
 
 const productSchema = new mongoose.Schema(
   {
