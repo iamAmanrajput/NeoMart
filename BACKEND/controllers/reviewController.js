@@ -145,7 +145,7 @@ exports.deleteReview = async (req, res) => {
       $pull: { reviews: review._id },
     });
 
-    await Product.calculateRating();
+    await product.calculateRating();
 
     return res.status(200).json({ success: true, message: "Review Deleted" });
   } catch (error) {

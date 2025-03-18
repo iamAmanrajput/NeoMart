@@ -29,6 +29,9 @@ const ReviewComponent = ({ productId }) => {
 
   useEffect(() => {
     const getReviews = async () => {
+      if (!productId) {
+        return;
+      }
       try {
         const res = await axios.get(
           `${import.meta.env.VITE_API_URL}/review/${productId}`
@@ -64,7 +67,7 @@ const ReviewComponent = ({ productId }) => {
       const { data, message } = res.data;
       toast(message);
       setReviewList([...reviewList, data]);
-      setNewReview({ name: "", review: "", reating: 0 });
+      setNewReview({ review: "", rating: 0 });
     } catch (error) {
       return handleErrorLogout(error);
     }
@@ -260,7 +263,7 @@ const ReviewComponent = ({ productId }) => {
                 />
                 <Button
                   className="mt-4"
-                  onClick={() => addReply(review?._id)} //if any error then change the function name
+                  onClick={() => replyReview(review?._id)}
                   size="sm"
                 >
                   Reply
