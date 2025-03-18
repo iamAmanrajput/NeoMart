@@ -1,6 +1,6 @@
 import React from "react";
 import LinkButton from "./LinkButton";
-import { starGenerator } from "@/constants/helper";
+import { starGenerator } from "@/constants/Helper";
 
 const ProductCard = ({
   name = "product Title",
