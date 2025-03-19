@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import LinkButton from "./LinkButton";
 import { starGenerator } from "@/constants/Helper";
 
@@ -11,6 +11,7 @@ const ProductCard = ({
     id: "22",
   },
 }) => {
+  const [open, setOpen] = useState(false);
   return (
     <div className="relative border w-fit overflow-clip grid z-1 hover:shadow-md rounded-2xl">
       <img
@@ -18,7 +19,12 @@ const ProductCard = ({
         alt={name}
         className="object-cover w-[30rem] h-[20rem]"
       />
-      <div className="px-3 grid gap-1 py-2 absolute bg-white dark:bg-zinc-900 w-full bottom-0 translate-y-[3rem] hover:translate-y-0 active:translate-y-0 transform transition-all ease-in-out rounded-xl duration-300">
+      <div
+        className={`px-3 grid gap-1 py-2 absolute bg-white dark:bg-zinc-900 w-full bottom-0 translate-y-[3rem] hover:translate-y-0 ${
+          open ? "translate-y-0" : "translate-y-3"
+        }  transform transition-all ease-in-out rounded-xl duration-300`}
+        onClick={() => setOpen((open) => !open)}
+      >
         <h2>{name}</h2>
         <div className="flex justify-between">
           <div className="flex">{starGenerator(rating)}</div>
