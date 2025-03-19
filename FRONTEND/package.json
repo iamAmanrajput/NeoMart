@@ -36,6 +36,7 @@
     "react-spinners": "^0.15.0",
     "recharts": "^2.15.1",
     "sonner": "^2.0.1",
+    "swiper": "^11.2.5",
     "tailwind-merge": "^3.0.2",
     "tailwindcss": "^4.0.9",
     "tailwindcss-animate": "^1.0.7",
