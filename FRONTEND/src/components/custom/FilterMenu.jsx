@@ -10,7 +10,8 @@ import {
 } from "@/components/ui/select";
 import axios from "axios";
 import { useDispatch } from "react-redux";
-import { setProducts } from "@/redux/slices/productSlice";
+import { setProducts, setHomepageLoader } from "@/redux/slices/productSlice";
+import { toast } from "sonner";
 
 const FilterMenu = () => {
   const [category, setCategory] = useState("");
@@ -20,14 +21,21 @@ const FilterMenu = () => {
 
   useEffect(() => {
     const getFilteredProducts = async () => {
-      const res = await axios.get(
-        `${
-          import.meta.env.VITE_API_URL
-        }/product/get-products?category=${category}&price=${price}&search=${search}`
-      );
-      const data = res.data;
-      if (data.success) {
-        dispatch(setProducts(data.data));
+      try {
+        dispatch(setHomepageLoader(true));
+        const res = await axios.get(
+          `${
+            import.meta.env.VITE_API_URL
+          }/product/get-products?category=${category}&price=${price}&search=${search}`
+        );
+        const data = res.data;
+        if (data.success) {
+          dispatch(setProducts(data.data));
+        }
+      } catch (error) {
+        toast.error(error.response?.data?.message || "An error occurred");
+      } finally {
+        dispatch(setHomepageLoader(false));
       }
     };
     getFilteredProducts();
