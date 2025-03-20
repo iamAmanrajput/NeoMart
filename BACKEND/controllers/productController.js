@@ -143,7 +143,7 @@ exports.getProducts = async (req, res) => {
   try {
     let { page, limit, category, price, search } = req.query;
     page = parseInt(page) || 1;
-    limit = parseInt(limit) || 9;
+    limit = parseInt(limit) || 500;
     let query = {};
 
     if (category) {
