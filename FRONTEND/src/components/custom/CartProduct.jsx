@@ -2,22 +2,12 @@ import { Colors } from "@/constants/colors";
 import { addToCart, removeFromCart } from "@/redux/slices/cartSlice";
 import { Minus, Plus } from "lucide-react";
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { toast } from "sonner";
 import { Button } from "../ui/button";
 import { useNavigate } from "react-router-dom";
 
-const CartProduct = ({
-  name,
-  price,
-  _id,
-  image,
-  rating,
-  quantity,
-  stock,
-  blacklisted,
-  color,
-}) => {
+const CartProduct = ({ name, price, _id, image, quantity, stock }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -38,9 +28,11 @@ const CartProduct = ({
                 className="cursor-pointer"
                 size={15}
                 stroke={Colors.customGray}
-                onClick={() =>
-                  dispatch(removeFromCart({ _id, quantity: 1, price }))
-                }
+                onClick={() => {
+                  quantity >= 2
+                    ? dispatch(removeFromCart({ _id, quantity: 1, price }))
+                    : (quantity = 1);
+                }}
               />{" "}
               <span className="text-slate-950 text-sm sm:text-md">
                 {quantity}
