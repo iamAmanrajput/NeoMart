@@ -29,8 +29,6 @@ const Product = () => {
   const [purchaseProduct, setPurchaseProduct] = useState(false);
   const [address, setAddress] = useState("");
 
-  const productStock = 10;
-
   useEffect(() => {
     const fetchProductByName = async () => {
       try {
@@ -196,19 +194,19 @@ const Product = () => {
                   <Plus
                     onClick={() =>
                       setProductQuantity((qty) =>
-                        qty < productStock ? qty + 1 : qty
+                        qty < product?.stock ? qty + 1 : qty
                       )
                     }
                     className="cursor-pointer"
                     stroke={Colors.customGray}
                   />
                 </div>
-                {product.stock - productQuantity > 0 && (
+                {product?.stock - productQuantity > 0 && (
                   <div className="grid text-sm font-semibold text-gray-600">
                     <span>
                       Only{" "}
                       <span className="text-customYellow">
-                        {product.stock - productQuantity} items{" "}
+                        {product?.stock - productQuantity} items{" "}
                       </span>
                       left!
                     </span>
@@ -223,17 +221,27 @@ const Product = () => {
                     placeholder="Enter Your PinCode Here"
                     onChange={(e) => setPincode(e.target.value)}
                   />
-                  <Button onClick={checkAvailability}>
+                  <Button
+                    className="cursor-pointer"
+                    onClick={checkAvailability}
+                  >
                     Check Availability
                   </Button>
                 </div>
                 <p className="text-sm px-2">{availabilityMessage}</p>
               </div>
               <div className="flex gap-3">
-                <Button onClick={() => setPurchaseProduct(true)}>
+                <Button
+                  className="cursor-pointer"
+                  onClick={() => setPurchaseProduct(true)}
+                >
                   Buy Now
                 </Button>
-                <Button variant="outline" onClick={handleAddToCart}>
+                <Button
+                  className="cursor-pointer"
+                  variant="outline"
+                  onClick={handleAddToCart}
+                >
                   Add To Cart
                 </Button>
               </div>
@@ -243,7 +251,9 @@ const Product = () => {
                     placeholder="Enter Your Address Here..."
                     onChange={(e) => setAddress(e.target.value)}
                   />
-                  <Button onClick={handleBuyNow}>Confirm Order</Button>
+                  <Button className="cursor-pointer" onClick={handleBuyNow}>
+                    Confirm Order
+                  </Button>
                 </div>
               )}
             </div>

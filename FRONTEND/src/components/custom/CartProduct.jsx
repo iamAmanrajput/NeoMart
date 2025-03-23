@@ -6,7 +6,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
 import { Button } from "../ui/button";
 import { useNavigate } from "react-router-dom";
-import useRazorpay from "@/hooks/use-razorpay";
 
 const CartProduct = ({
   name,
@@ -21,35 +20,6 @@ const CartProduct = ({
 }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { isAuthenticated } = useSelector((state) => state.auth);
-  const { generatePayment, verifyPayment } = useRazorpay();
-
-  const handleBuyNow = async () => {
-    if (!isAuthenticated) {
-      toast.error("Please log in first to purchase this product.");
-      navigate("/login");
-      return;
-    }
-    if (quantity > stock) {
-      toast.error("Product Out of stock");
-      return;
-    }
-    if (blacklisted) {
-      toast.error("Product isn't available for purchase");
-      return;
-    }
-    if (color == "") {
-      toast.error("Please Select a Color");
-      return;
-    }
-
-    const order = await generatePayment(price * quantity);
-    await verifyPayment(
-      order,
-      [{ id: _id, quantity, color }],
-      "123 Main Street"
-    );
-  };
 
   return (
     <div className="border w-fit rounded-2xl overflow-clip grid z-1 relative hover:shadow-md">
@@ -65,6 +35,7 @@ const CartProduct = ({
           <div className="flex gap-3 items-center">
             <div className="flex items-center gap-5 bg-gray-100 rounded-lg px-3 py-2 w-fit ">
               <Minus
+                className="cursor-pointer"
                 size={15}
                 stroke={Colors.customGray}
                 onClick={() =>
@@ -75,6 +46,7 @@ const CartProduct = ({
                 {quantity}
               </span>{" "}
               <Plus
+                className="cursor-pointer"
                 size={15}
                 stroke={Colors.customGray}
                 onClick={() => {
@@ -85,7 +57,7 @@ const CartProduct = ({
               />
             </div>
           </div>
-          <Button onClick={handleBuyNow} size="sm">
+          <Button onClick={() => navigate("/checkout")} size="sm">
             Buy Now
           </Button>
         </div>

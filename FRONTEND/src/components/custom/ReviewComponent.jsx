@@ -177,7 +177,9 @@ const ReviewComponent = ({ productId }) => {
               setNewReview({ ...newReview, rating: Number(e.target.value) })
             }
           />
-          <Button onClick={addReview}>Submit Review</Button>
+          <Button className="cursor-pointer" onClick={addReview}>
+            Submit Review
+          </Button>
         </div>
       </div>
 
@@ -262,7 +264,7 @@ const ReviewComponent = ({ productId }) => {
                   onChange={(e) => setNewReply({ review: e.target.value })}
                 />
                 <Button
-                  className="mt-4"
+                  className="mt-4 cursor-pointer"
                   onClick={() => replyReview(review?._id)}
                   size="sm"
                 >
@@ -275,7 +277,7 @@ const ReviewComponent = ({ productId }) => {
                 onClick={() =>
                   setReplyingTo(replyingTo === review._id ? null : review._id)
                 }
-                className="text-sm text-customYellow hover:underline"
+                className="text-sm text-customYellow hover:underline cursor-pointer"
               >
                 {replyingTo === review?._id ? "Cancel" : "Reply"}
               </button>

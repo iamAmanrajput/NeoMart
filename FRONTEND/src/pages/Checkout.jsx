@@ -116,7 +116,10 @@ const Checkout = () => {
                   className="w-full h-[175px] mt-2"
                   onChange={(e) => setAddress(e.target.value)}
                 />
-                <Button onClick={handleCheckout} className="w-full">
+                <Button
+                  onClick={handleCheckout}
+                  className="w-full cursor-pointer"
+                >
                   Place Order
                 </Button>
               </div>
