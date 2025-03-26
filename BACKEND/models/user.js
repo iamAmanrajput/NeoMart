@@ -18,7 +18,6 @@ const userSchema = new mongoose.Schema(
     profileImg: {
       url: {
         type: String,
-        default: "https://robohash.org/ankit",
       },
       publicId: {
         type: String,

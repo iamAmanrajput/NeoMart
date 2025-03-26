@@ -1,8 +1,52 @@
 const User = require("../models/user");
+const { ROLES } = require("../utils/constants");
+const { uploadImageToCloudinary } = require("../utils/imageUploader");
+const cloudinary = require("cloudinary").v2;
 
-const UpdateProfile = async (req, res) => {
+exports.updateProfile = async (req, res) => {
   try {
-    const{}
+    const { id } = req;
+    if (req.role !== ROLES.user) {
+      return res.status(403).json({
+        success: false,
+        message: "Unauthorized",
+      });
+    }
+
+    let user = await User.findById(id);
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+    }
+
+    const { name, email, phone } = req.body;
+    const image = req.files?.image; // Safe way to access file
+
+    if (image) {
+      if (user.profileImg?.publicId) {
+        await cloudinary.uploader.destroy(user.profileImg.publicId);
+      }
+      const upload = await uploadImageToCloudinary(
+        image,
+        process.env.CLOUD_FOLDER
+      );
+      user.profileImg = {
+        url: upload.secure_url,
+        publicId: upload.public_id,
+      };
+    }
+
+    if (name) user.name = name;
+    if (email) user.email = email;
+    if (phone) user.phone = phone;
+
+    await user.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Profile Updated Successfully",
+    });
   } catch (error) {
     return res.status(500).json({ success: false, message: error.message });
   }
