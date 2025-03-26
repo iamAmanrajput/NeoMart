@@ -15,6 +15,15 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    profileImg: {
+      url: {
+        type: String,
+        default: "https://robohash.org/ankit",
+      },
+      publicId: {
+        type: String,
+      },
+    },
     phone: {
       type: String,
       required: true,

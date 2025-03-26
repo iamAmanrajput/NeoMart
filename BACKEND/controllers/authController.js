@@ -44,6 +44,7 @@ exports.signup = async (req, res) => {
       email: normalizedEmail,
       password: hashedPassword,
       phone,
+      profileImg: { url: `https://robohash.org/${name}` },
     });
 
     return res.status(201).json({
