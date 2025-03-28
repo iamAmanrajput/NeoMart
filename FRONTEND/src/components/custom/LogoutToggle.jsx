@@ -22,9 +22,19 @@ const LogoutToggle = ({ user }) => {
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <Link to="/orders">
-          <DropdownMenuItem>My Orders</DropdownMenuItem>
+          <DropdownMenuItem className="cursor-pointer">
+            My Orders
+          </DropdownMenuItem>
         </Link>
-        <DropdownMenuItem onClick={() => dispatch(setUserLogout())}>
+        <Link to="/profile">
+          <DropdownMenuItem className="cursor-pointer">
+            My Profile
+          </DropdownMenuItem>
+        </Link>
+        <DropdownMenuItem
+          className="cursor-pointer"
+          onClick={() => dispatch(setUserLogout())}
+        >
           Logout
         </DropdownMenuItem>
       </DropdownMenuContent>

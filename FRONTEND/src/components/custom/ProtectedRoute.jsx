@@ -44,6 +44,9 @@ const ProtectedRoute = ({ children }) => {
     return <Navigate to="/" />;
   }
 
+  if (!isAuthenticated && pathname === "/profile") {
+    return <Navigate to="/login" />;
+  }
   return children;
 };
 

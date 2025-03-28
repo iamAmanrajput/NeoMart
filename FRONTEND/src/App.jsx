@@ -17,6 +17,7 @@ import Orders from "./Admin/Orders";
 import Settings from "./Admin/Settings";
 import MyOrders from "./pages/MyOrders";
 import ProtectedRoute from "./components/custom/ProtectedRoute";
+import MyProfile from "./pages/MyProfile";
 
 const App = () => {
   return (
@@ -61,6 +62,17 @@ const App = () => {
             <RootLayout>
               <Product />
             </RootLayout>
+          }
+        ></Route>
+
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <RootLayout>
+                <MyProfile />
+              </RootLayout>
+            </ProtectedRoute>
           }
         ></Route>
 
