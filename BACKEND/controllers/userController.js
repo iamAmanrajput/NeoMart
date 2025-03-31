@@ -42,11 +42,19 @@ exports.updateProfile = async (req, res) => {
     if (email) user.email = email;
     if (phone) user.phone = phone;
 
-    await user.save();
+    const updatedUser = await user.save();
 
     return res.status(200).json({
       success: true,
       message: "Profile Updated Successfully",
+      user: {
+        id: updatedUser._id,
+        name: updatedUser.name,
+        email: updatedUser.email,
+        phone: updatedUser.phone,
+        role: updatedUser.role,
+        profileImg: updatedUser.profileImg.url,
+      },
     });
   } catch (error) {
     return res.status(500).json({ success: false, message: error.message });
@@ -91,10 +99,7 @@ exports.updatePassword = async (req, res) => {
   }
 };
 
-exports.forgetPassword = async (req,res) => {
+exports.forgetPassword = async (req, res) => {
   try {
-    
-  } catch (error) {
-    
-  }
-}
+  } catch (error) {}
+};

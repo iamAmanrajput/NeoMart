@@ -204,9 +204,9 @@ const AllProducts = () => {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Categories</SelectItem>
-                <SelectItem value="headset">Headset</SelectItem>
-                <SelectItem value="keyboard">Keyboard</SelectItem>
-                <SelectItem value="mouse">Mouse</SelectItem>
+                <SelectItem value="Headset">Headset</SelectItem>
+                <SelectItem value="Keyboard">Keyboard</SelectItem>
+                <SelectItem value="Mouse">Mouse</SelectItem>
               </SelectContent>
             </Select>
           </div>
