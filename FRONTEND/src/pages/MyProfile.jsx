@@ -27,8 +27,7 @@ const MyProfile = () => {
         <CardContent>
           <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
             <Avatar className="h-20 w-20">
-              <AvatarImage src="https://github.com/esme.png" />
-              <AvatarFallback>EM</AvatarFallback>
+              <AvatarImage src={user.profileImg} />
             </Avatar>
 
             <div className="text-center sm:text-left">

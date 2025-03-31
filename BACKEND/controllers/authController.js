@@ -100,6 +100,7 @@ exports.login = async (req, res) => {
         email: user.email,
         phone: user.phone,
         role: user.role,
+        profileImg: user.profileImg.url,
       },
     });
   } catch (error) {

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,13 +11,21 @@ import { useDispatch } from "react-redux";
 import { setUserLogout } from "@/redux/slices/authSlice";
 
 const LogoutToggle = ({ user }) => {
+  const [image, setImage] = useState("");
+  useEffect(() => {
+    const userData = JSON.parse(localStorage.getItem("user"));
+    if (userData) {
+      const { profileImg } = userData;
+      setImage(profileImg);
+    }
+  }, []);
   const dispatch = useDispatch();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
-        <Avatar className={`cursor-pointer`}>
-          {/* <AvatarImage src="https://github.com/shadcn.png" /> */}
-          <AvatarFallback>{user?.name?.charAt(0).toUpperCase()}</AvatarFallback>
+        <Avatar className={`cursor-pointer `}>
+          <AvatarImage className="bg-[#27272A]" src={image} />
+          {/* <AvatarFallback>{user?.name?.charAt(0).toUpperCase()}</AvatarFallback> */}
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
