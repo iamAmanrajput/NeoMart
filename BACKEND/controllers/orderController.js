@@ -204,7 +204,7 @@ exports.getMetrics = async (req, res) => {
     const recentOrders = await Order.find()
       .populate({
         path: "userId",
-        select: "name email",
+        select: `name email`,
       })
       .select("amount")
       .sort({ createdAt: -1 })

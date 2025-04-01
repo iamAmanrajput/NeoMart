@@ -22,15 +22,7 @@ import {
   CardFooter,
 } from "../ui/card";
 import { TrendingUp } from "lucide-react";
-
-const chartData = [
-  { month: "January", mouse: 186, keyboard: 80, headset: 50 },
-  { month: "February", mouse: 305, keyboard: 200, headset: 50 },
-  { month: "March", mouse: 237, keyboard: 120, headset: 50 },
-  { month: "April", mouse: 73, keyboard: 190, headset: 50 },
-  { month: "May", mouse: 209, keyboard: 130, headset: 50 },
-  { month: "June", mouse: 214, keyboard: 140, headset: 50 },
-];
+import { useEffect, useState } from "react";
 
 const chartConfig = {
   mouse: {
@@ -47,12 +39,29 @@ const chartConfig = {
   },
 };
 
-export function Chart1() {
+export function Chart1(props) {
+  const [chartData, setChartData] = useState([]);
+
+  useEffect(() => {
+    if (props.data) {
+      const transformedData = Object.keys(props.data).map((month) => ({
+        month,
+        mouse: props.data[month].Mouse || 0,
+        keyboard: props.data[month].Keyboard || 0,
+        headset: props.data[month].Headset || 0,
+      }));
+      setChartData(transformedData);
+    }
+  }, [props.data]);
+
+  console.log(chartData);
   return (
     <Card className="flex-1 rounded-xl bg-muted/50 md:min-h-min">
       <CardHeader>
         <CardTitle>Bar Chart - NeoCart</CardTitle>
-        <CardDescription>January - June 2025</CardDescription>
+        <CardDescription>
+          {chartData[0]?.month} - {chartData[chartData.length - 1]?.month} 2025
+        </CardDescription>
       </CardHeader>
       <CardContent className="w-full">
         <ChartContainer config={chartConfig} className="w-full">
@@ -64,7 +73,7 @@ export function Chart1() {
                 tickLine={false}
                 tickMargin={10}
                 axisLine={false}
-                tickFormatter={(value) => value.slice(0, 3)} // "January" -> "Jan"
+                tickFormatter={(value) => value.slice(0, 3)} // "April" -> "Apr"
               />
               <ChartTooltip content={<ChartTooltipContent />} />
               <Bar dataKey="mouse" fill={chartConfig.mouse.color} radius={4} />

@@ -99,7 +99,7 @@ const Analytics = () => {
 
           {/* chart */}
           <div className="flex flex-col sm:flex-row gap-4">
-            <Chart1></Chart1>
+            <Chart1 data={metrics?.sixMonthsBarChartData}></Chart1>
             <div className="p-5 bg-muted/50 rounded-lg">
               <h3 className="font-bold text-xl">Recent Sales</h3>
               <p className="text-sm mt-1 my-8">
@@ -113,7 +113,7 @@ const Analytics = () => {
                   >
                     <div className="flex gap-4">
                       <Avatar>
-                        <AvatarImage src="https://github.com/shadcn.png" />
+                        {/* <AvatarImage src="https://github.com/shadcn.png" /> */}
                         <AvatarFallback>
                           {user?.userId?.name?.charAt(0)?.toUpperCase()}
                         </AvatarFallback>

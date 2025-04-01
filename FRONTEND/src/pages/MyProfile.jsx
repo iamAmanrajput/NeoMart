@@ -54,6 +54,9 @@ const MyProfile = () => {
   const handleEditProfile = () => {
     setIsProfileEditModelOpen(true);
   };
+  const handleProfileChange = (e) => {
+    setProfileFormdata({ ...profileFormdata, [e.target.name]: e.target.value });
+  };
 
   const handleUpdateProfile = async (e) => {
     e.preventDefault();
@@ -76,6 +79,12 @@ const MyProfile = () => {
       toast.error(error.response.data.message);
     }
     setIsProfileEditModelOpen(false);
+    setProfileFormdata({
+      name: user.name,
+      email: user.email,
+      phone: user.phone,
+      image: image,
+    });
   };
 
   return (
@@ -128,6 +137,7 @@ const MyProfile = () => {
                       name="name"
                       type="text"
                       value={user.name}
+                      onChange={handleProfileChange}
                       className="border rounded-md px-3 py-2"
                     />
                   </div>
@@ -141,6 +151,7 @@ const MyProfile = () => {
                       name="email"
                       type="email"
                       value={user.email}
+                      onChange={handleProfileChange}
                       className="border rounded-md px-3 py-2"
                     />
                   </div>
@@ -154,6 +165,7 @@ const MyProfile = () => {
                       name="phone"
                       type="text"
                       value={user.phone}
+                      onChange={handleProfileChange}
                       className="border rounded-md px-3 py-2"
                     />
                   </div>
