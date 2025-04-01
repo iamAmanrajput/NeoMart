@@ -21,15 +21,19 @@ import {
 import useErrorLogout from "@/hooks/use-error-logout";
 import axios from "axios";
 import { toast } from "sonner";
+import Loader from "@/components/custom/Loader";
+import { Colors } from "@/constants/colors";
 
 const Orders = () => {
   const [orders, setOrders] = useState([]);
   const [totalPages, setTotalPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const { handleErrorLogout } = useErrorLogout();
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchOrders = async () => {
+      setLoading(true);
       try {
         const response = await axios.get(
           `${
@@ -51,6 +55,8 @@ const Orders = () => {
           error,
           error.response?.data?.message || "An error occurred"
         );
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -82,7 +88,11 @@ const Orders = () => {
           <div className="p-4 space-y-4">
             <h2 className="text-xl font-medium">Order Summery</h2>
             <div className="grid space-y-1 gap-2 md:w-[70vw] 2xl:w-[80rem]">
-              {orders.length === 0 ? (
+              {loading ? (
+                <div className="flex justify-center my-10">
+                  <Loader width={7} height={30} color={Colors.customGray} />
+                </div>
+              ) : orders.length === 0 ? (
                 <h2 className="text-primary text-3xl">
                   {" "}
                   Nothing to show, Please add some products...

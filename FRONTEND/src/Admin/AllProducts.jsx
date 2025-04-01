@@ -30,6 +30,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setProducts } from "@/redux/slices/productSlice";
 import useErrorLogout from "@/hooks/use-error-logout";
 import Loader from "@/components/custom/Loader";
+import { Colors } from "@/constants/colors";
 
 const AllProducts = () => {
   const { products } = useSelector((state) => state.product);
@@ -40,10 +41,12 @@ const AllProducts = () => {
   const [isEditModelOpen, setIsEditModelOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
   const [loadingProductId, setLoadingProductId] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const dispatch = useDispatch();
 
   const getFilterProducts = async () => {
+    setLoading(true);
     try {
       const response = await axios.get(
         `${
@@ -54,6 +57,8 @@ const AllProducts = () => {
       dispatch(setProducts(data.data));
     } catch (error) {
       handleErrorLogout(error, "Error fetching products");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -212,7 +217,11 @@ const AllProducts = () => {
           </div>
         </form>
       </div>
-      {products?.length === 0 ? (
+      {loading ? (
+        <div className="flex justify-center my-10">
+          <Loader width={7} height={30} color={Colors.customGray} />
+        </div>
+      ) : products?.length === 0 ? (
         <p className="text-center text-gray-500 mt-8">
           No Products Found, Try Adjusting your search or category
         </p>
