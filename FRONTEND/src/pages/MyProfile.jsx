@@ -13,29 +13,25 @@ import { setUserLogout } from "@/redux/slices/authSlice";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
 import axios from "axios";
 import { toast } from "sonner";
 
 const MyProfile = () => {
   const [user, setUser] = useState({});
-  const [image, setImage] = useState(null);
-  const [profileFormdata, setProfileFormdata] = useState({
-    name: user.name,
-    email: user.email,
-    phone: user.phone,
-    image: image,
-  });
+  const [image, setImage] = useState("");
   const [isProfileEditModelOpen, setIsProfileEditModelOpen] = useState(false);
-
   const dispatch = useDispatch();
+  const [profileFormdata, setProfileFormdata] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    image: "",
+  });
+
   useEffect(() => {
     const userData = JSON.parse(localStorage.getItem("user"));
     if (userData) {
@@ -48,12 +44,21 @@ const MyProfile = () => {
     if (file) {
       const imageUrl = URL.createObjectURL(file);
       setImage(imageUrl);
+      setProfileFormdata({ ...profileFormdata, image: file });
     }
   };
 
-  const handleEditProfile = () => {
+  const handleEditProfile = (user) => {
+    setProfileFormdata({
+      name: user.name || "",
+      email: user.email || "",
+      phone: user.phone || "",
+      image: "",
+    });
+    setImage(user.profileImg || "");
     setIsProfileEditModelOpen(true);
   };
+
   const handleProfileChange = (e) => {
     setProfileFormdata({ ...profileFormdata, [e.target.name]: e.target.value });
   };
@@ -61,30 +66,42 @@ const MyProfile = () => {
   const handleUpdateProfile = async (e) => {
     e.preventDefault();
     try {
+      const formData = new FormData();
+      formData.append("name", profileFormdata.name);
+      formData.append("email", profileFormdata.email);
+      formData.append("phone", profileFormdata.phone);
+      if (profileFormdata.image) {
+        formData.append("image", profileFormdata.image);
+      }
+
       const res = await axios.put(
         `${import.meta.env.VITE_API_URL}/profile/update-profile`,
-        profileFormdata,
+        formData,
         {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
         }
       );
+
       if (res.data.success) {
         toast("Profile Updated Successfully");
         localStorage.setItem("user", JSON.stringify(res.data.user));
         setUser(res.data.user);
+        setProfileFormdata({
+          name: "",
+          email: "",
+          phone: "",
+          image: "",
+        });
+        setImage("");
+        setIsProfileEditModelOpen(false);
       } else {
         toast.error(res.data.message);
       }
     } catch (error) {
-      toast.error(error.response.data.message);
+      toast.error(error?.response?.data?.message || "Something went wrong");
     }
-    setIsProfileEditModelOpen(false);
-    setProfileFormdata({
-      name: user.name,
-      email: user.email,
-      phone: user.phone,
-      image: image,
-    });
   };
 
   return (
@@ -97,7 +114,8 @@ const MyProfile = () => {
         <CardContent>
           <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
             <Avatar className="h-20 w-20">
-              <AvatarImage src={user.profileImg} />
+              <AvatarImage src={user?.profileImg || "/default-avatar.png"} />
+              <AvatarFallback>U</AvatarFallback>
             </Avatar>
 
             <div className="text-center sm:text-left">
@@ -115,9 +133,13 @@ const MyProfile = () => {
         </CardContent>
 
         <CardFooter className="flex flex-col sm:flex-row gap-4 sm:justify-start items-center sm:items-start">
-          <Button className="w-full sm:w-auto" onClick={handleEditProfile}>
+          <Button
+            className="w-full sm:w-auto"
+            onClick={() => handleEditProfile(user)}
+          >
             Update Profile
           </Button>
+
           <Dialog
             open={isProfileEditModelOpen}
             onOpenChange={setIsProfileEditModelOpen}
@@ -136,7 +158,7 @@ const MyProfile = () => {
                       id="name"
                       name="name"
                       type="text"
-                      value={user.name}
+                      value={profileFormdata.name}
                       onChange={handleProfileChange}
                       className="border rounded-md px-3 py-2"
                     />
@@ -150,7 +172,7 @@ const MyProfile = () => {
                       id="email"
                       name="email"
                       type="email"
-                      value={user.email}
+                      value={profileFormdata.email}
                       onChange={handleProfileChange}
                       className="border rounded-md px-3 py-2"
                     />
@@ -164,13 +186,12 @@ const MyProfile = () => {
                       id="phone"
                       name="phone"
                       type="text"
-                      value={user.phone}
+                      value={profileFormdata.phone}
                       onChange={handleProfileChange}
                       className="border rounded-md px-3 py-2"
                     />
                   </div>
 
-                  {/* Image Upload */}
                   <div className="grid gap-2">
                     <label htmlFor="imageUpload" className="font-medium">
                       Upload Profile Image
@@ -189,7 +210,6 @@ const MyProfile = () => {
                       Click to upload image
                     </label>
 
-                    {/* Image Preview */}
                     {image && (
                       <div className="mt-2">
                         <img
@@ -202,9 +222,7 @@ const MyProfile = () => {
                   </div>
                 </div>
                 <DialogFooter>
-                  <Button onClick={handleUpdateProfile} type="submit">
-                    Save Changes
-                  </Button>
+                  <Button type="submit">Save Changes</Button>
                 </DialogFooter>
               </form>
             </DialogContent>
@@ -213,7 +231,7 @@ const MyProfile = () => {
           <Button className="w-full sm:w-auto">Update Password</Button>
           <Button
             variant="destructive"
-            className="w-full sm:w-auto cursor-pointer"
+            className="w-full sm:w-auto"
             onClick={() => dispatch(setUserLogout())}
           >
             Logout
