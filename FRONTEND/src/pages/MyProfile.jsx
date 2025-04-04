@@ -182,7 +182,7 @@ const MyProfile = () => {
 
         <CardFooter className="flex flex-col sm:flex-row gap-4 sm:justify-start items-center sm:items-start">
           <Button
-            className="w-full sm:w-auto"
+            className="w-full sm:w-auto cursor-pointer"
             onClick={() => handleEditProfile(user)}
           >
             Update Profile
@@ -278,7 +278,10 @@ const MyProfile = () => {
             </DialogContent>
           </Dialog>
 
-          <Button onClick={handleEditPassword} className="w-full sm:w-auto">
+          <Button
+            onClick={handleEditPassword}
+            className="w-full sm:w-auto cursor-pointer"
+          >
             Update Password
           </Button>
 
@@ -336,7 +339,7 @@ const MyProfile = () => {
 
           <Button
             variant="destructive"
-            className="w-full sm:w-auto"
+            className="w-full sm:w-auto cursor-pointer"
             onClick={() => dispatch(setUserLogout())}
           >
             Logout
