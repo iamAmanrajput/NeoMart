@@ -19,17 +19,27 @@ import {
 } from "@/components/ui/dialog";
 import axios from "axios";
 import { toast } from "sonner";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import Loader from "@/components/custom/Loader";
 
 const MyProfile = () => {
   const [user, setUser] = useState({});
   const [image, setImage] = useState("");
   const [isProfileEditModelOpen, setIsProfileEditModelOpen] = useState(false);
+  const [isEditPasswordOpen, setIsEditPasswordOpen] = useState(false);
+  const [passwordLoading, setPasswordLoading] = useState(false);
+  const [profileLoading, setProfileLoading] = useState(false);
   const dispatch = useDispatch();
   const [profileFormdata, setProfileFormdata] = useState({
     name: "",
     email: "",
     phone: "",
     image: "",
+  });
+  const [passwordFormdata, setPasswordFormdata] = useState({
+    previousPassword: "",
+    newPassword: "",
   });
 
   useEffect(() => {
@@ -59,12 +69,17 @@ const MyProfile = () => {
     setIsProfileEditModelOpen(true);
   };
 
+  const handleEditPassword = () => {
+    setIsEditPasswordOpen(true);
+  };
+
   const handleProfileChange = (e) => {
     setProfileFormdata({ ...profileFormdata, [e.target.name]: e.target.value });
   };
 
   const handleUpdateProfile = async (e) => {
     e.preventDefault();
+    setProfileLoading(true);
     try {
       const formData = new FormData();
       formData.append("name", profileFormdata.name);
@@ -101,6 +116,39 @@ const MyProfile = () => {
       }
     } catch (error) {
       toast.error(error?.response?.data?.message || "Something went wrong");
+    } finally {
+      setProfileLoading(false);
+    }
+  };
+
+  const handleEditPasswordSubmit = async (e) => {
+    e.preventDefault();
+    setPasswordLoading(true);
+    try {
+      const res = await axios.put(
+        `${import.meta.env.VITE_API_URL}/profile/update-password`,
+        passwordFormdata,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+
+      if (res.data.success) {
+        toast("Password Updated Successfully");
+        setPasswordFormdata({
+          previousPassword: "",
+          newPassword: "",
+        });
+        setIsEditPasswordOpen(false);
+      } else {
+        toast.error(res.data.message);
+      }
+    } catch (error) {
+      toast.error(error?.response?.data?.message || "Something went wrong");
+    } finally {
+      setPasswordLoading(false);
     }
   };
 
@@ -139,7 +187,7 @@ const MyProfile = () => {
           >
             Update Profile
           </Button>
-
+          {/* update profile */}
           <Dialog
             open={isProfileEditModelOpen}
             onOpenChange={setIsProfileEditModelOpen}
@@ -222,13 +270,70 @@ const MyProfile = () => {
                   </div>
                 </div>
                 <DialogFooter>
-                  <Button type="submit">Save Changes</Button>
+                  <Button type="submit">
+                    {profileLoading ? <Loader /> : "Save Changes"}
+                  </Button>
                 </DialogFooter>
               </form>
             </DialogContent>
           </Dialog>
 
-          <Button className="w-full sm:w-auto">Update Password</Button>
+          <Button onClick={handleEditPassword} className="w-full sm:w-auto">
+            Update Password
+          </Button>
+
+          {/* update password */}
+          <Dialog
+            open={isEditPasswordOpen}
+            onOpenChange={setIsEditPasswordOpen}
+          >
+            <DialogContent className="sm-max-w-[425px]">
+              <DialogHeader>
+                <DialogTitle>Edit Product</DialogTitle>
+              </DialogHeader>
+              <form onSubmit={handleEditPasswordSubmit}>
+                <div className="grid gap-4 py-4">
+                  <div className="grid gap-4 items-center">
+                    <Label htmlFor="previousPassword">Old Password</Label>
+                    <Input
+                      id="previousPassword"
+                      name="previousPassword"
+                      type="password"
+                      value={passwordFormdata.previousPassword}
+                      onChange={(e) =>
+                        setPasswordFormdata({
+                          ...passwordFormdata,
+                          previousPassword: e.target.value,
+                        })
+                      }
+                    />
+                  </div>
+
+                  <div className="grid gap-4 items-center">
+                    <Label htmlFor="newPassword">New Password</Label>
+                    <Input
+                      id="newPassword"
+                      name="newPassword"
+                      type="password"
+                      value={passwordFormdata.newPassword}
+                      onChange={(e) =>
+                        setPasswordFormdata({
+                          ...passwordFormdata,
+                          newPassword: e.target.value,
+                        })
+                      }
+                    />
+                  </div>
+                </div>
+                <DialogFooter>
+                  <Button type="submit">
+                    {passwordLoading ? <Loader /> : "Save Changes"}
+                  </Button>
+                </DialogFooter>
+              </form>
+            </DialogContent>
+          </Dialog>
+
           <Button
             variant="destructive"
             className="w-full sm:w-auto"

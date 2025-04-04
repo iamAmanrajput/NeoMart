@@ -98,8 +98,3 @@ exports.updatePassword = async (req, res) => {
     return res.status(500).json({ success: false, message: error.message });
   }
 };
-
-exports.forgetPassword = async (req, res) => {
-  try {
-  } catch (error) {}
-};
