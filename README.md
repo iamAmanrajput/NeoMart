@@ -109,6 +109,11 @@ npm run dev
 │   └── src/
 ```
 
+## Folder Structure
+
+![NeoMart Diagram](https://github.com/user-attachments/assets/f26b0a80-ab2a-49f0-88c4-f7e39e81baba)
+
+
 ## 🤝 Contributing
 
 1. Fork the repository
