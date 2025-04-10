@@ -14,6 +14,12 @@ A modern full-stack e-commerce platform built with React and Node.js.
 - Admin dashboard
 - Cloudinary integration for image management
 
+## Screenshots
+
+![image](https://github.com/user-attachments/assets/e53f3408-3647-4144-ade9-ad86bfec0486)
+
+
+
 ## 🛠️ Tech Stack
 
 ### Backend
