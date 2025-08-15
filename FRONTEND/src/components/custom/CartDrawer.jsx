@@ -22,15 +22,15 @@ const CartDrawer = () => {
   );
   return (
     <Drawer>
-      <DrawerTrigger className="relative">
-        {totalQuantity > 0 && (
-          <Badge className={`absolute px-1 py-0`}>{totalQuantity}</Badge>
-        )}
-        <ShoppingCart
-          className="text-gray-800 dark:text-white hover:scale-105 cursor-pointer transition-all ease-in-out"
-          strokeWidth={1.3}
-          size={28}
-        ></ShoppingCart>
+      <DrawerTrigger asChild className="relative">
+        <Button variant="outline" className="relative" size="icon">
+          <ShoppingCart className="size-4 text-zinc-600 dark:text-zinc-300 cursor-pointer"></ShoppingCart>
+          {totalQuantity > 0 && (
+            <Badge className="absolute -top-2 -right-2 h-5 w-5 animate-pulse flex items-center justify-center p-0 text-xs">
+              {totalQuantity}
+            </Badge>
+          )}
+        </Button>
       </DrawerTrigger>
       <DrawerContent>
         <DrawerHeader>

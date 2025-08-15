@@ -193,7 +193,7 @@ const ReviewComponent = ({ productId }) => {
             {/* REVIEWER INFO */}
             <div className="flex mb-4 items-center">
               <img
-                src="https://placehold.co/40"
+                src={review?.userId?.profileImg?.url}
                 alt={review?.userId?.name}
                 className="w-10 h-10 rounded-full mr-4 border  border-gray-300"
               />

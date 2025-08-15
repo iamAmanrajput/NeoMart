@@ -16,7 +16,7 @@ const ProductList = () => {
           <Loader width={7} height={30} color={Colors.customGray} />
         </div>
       ) : (
-        <div className="w-[92.5vw] grid sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 mx-auto gap-5 place-content-center my-10">
+        <div className="w-[92.5vw] grid grid-cols-1 sm:grid-cols-3 gap-5 mx-auto my-10">
           {products?.map((product) => (
             <ProductCard key={product._id} {...product} />
           ))}
