@@ -11,6 +11,7 @@ import useErrorLogout from "@/hooks/use-error-logout";
 import useRazorpay from "@/hooks/use-razorpay";
 import { toast } from "sonner";
 import { emptyCart } from "@/redux/slices/cartSlice";
+import { motion } from "framer-motion";
 
 const Checkout = () => {
   const [address, setAddress] = useState("");
@@ -28,105 +29,128 @@ const Checkout = () => {
       toast.error("Please enter Your Address");
       return;
     }
-    const productArray = cartItems.map((item) => {
-      return {
-        id: item._id,
-        quantity: item.quantity,
-        color: item.color,
-      };
-    });
+    const productArray = cartItems.map((item) => ({
+      id: item._id,
+      quantity: item.quantity,
+      color: item.color,
+    }));
     try {
       const options = await generatePayment(totalPrice);
-      const success = await verifyPayment(options, productArray, address);
+      await verifyPayment(options, productArray, address);
       dispatch(emptyCart());
+      // Optional: Navigate to success page or show success toast
     } catch (error) {
-      return handleErrorLogout(error);
+      handleErrorLogout(error);
     }
   };
 
   return (
-    <div>
-      <div className="w-[90vw] mx-auto sm:w-[60vw] flex justify-between items-center sm:my-20">
-        <div className="flex flex-col sm:flex-row gap-5 mx-auto my-10">
-          {/* product details */}
-          <div className="space-y-8">
-            <div className="p-4 space-y-4">
-              <h2 className="text-xl font-medium">Order Summery</h2>
-              <div className="space-y-1 text-3xl">
-                {cartItems.length === 0 ? (
-                  <h2 className="text-primary text-3xl">
-                    Nothing to Show, Please add some Products
-                  </h2>
-                ) : (
-                  cartItems.map((item) => (
-                    <CheckoutProduct key={item?.id} {...item}></CheckoutProduct>
-                  ))
-                )}
-              </div>
-              <hr />
-              <div className="p-3 rounded-md">
-                <p className="flex justify-between items-center">
-                  <span className="font-semibold text-customGray">
-                    Subtotal:
-                  </span>
-                  <span className="font-bold">₹ {totalPrice}</span>
-                </p>
-                <p className="flex justify-between items-center">
-                  <span className="font-semibold text-customGray">Tax:</span>
-                  <span className="font-bold">₹0</span>
-                </p>
-                <p className="flex justify-between items-center">
-                  <span className="font-semibold text-customGray">
-                    Shipping:
-                  </span>
-                  <span className="font-bold">₹0</span>
-                </p>
-              </div>
-              <hr />
-              <p className="flex justify-between items-center px-3">
-                <span className="font-bold">Total:</span>
-                <span className="font-bold">₹ {totalPrice}</span>
-              </p>
+    <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 my-12">
+      <motion.div
+        className="flex flex-col sm:flex-row gap-12"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+      >
+        {/* Product Details */}
+        <section className="flex-1 space-y-6">
+          <h2 className="text-2xl font-semibold border-b pb-3 mb-4">
+            Order Summary
+          </h2>
+
+          {cartItems.length === 0 ? (
+            <p className="text-center text-primary text-xl py-20">
+              Nothing to Show, Please add some Products
+            </p>
+          ) : (
+            <div className="space-y-4 max-h-[70vh] overflow-y-auto pr-2">
+              {cartItems.map((item) => (
+                <CheckoutProduct key={item._id} {...item} />
+              ))}
+            </div>
+          )}
+
+          <div className="border-t pt-4 space-y-3 text-lg">
+            <div className="flex justify-between">
+              <span className="font-semibold text-customGray">Subtotal:</span>
+              <span className="font-bold">₹ {totalPrice.toLocaleString()}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="font-semibold text-customGray">Tax:</span>
+              <span className="font-bold">₹0</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="font-semibold text-customGray">Shipping:</span>
+              <span className="font-bold">₹0</span>
+            </div>
+            <div className="flex justify-between border-t pt-3 font-bold text-xl">
+              <span>Total:</span>
+              <span>₹ {totalPrice.toLocaleString()}</span>
             </div>
           </div>
-          {/* personel details*/}
-          <div className="w-[90vw] sm:w-[20vw]">
-            <Card className="shadow-md p-4">
-              <h2 className="text-xl font-medium">Billing Information</h2>
-              <div className="space-y-2">
-                <Label htmlFor="name">Full Name</Label>
+        </section>
+
+        {/* Billing Info */}
+        <section className="w-full max-w-sm">
+          <Card className="p-6 shadow-lg">
+            <h2 className="text-2xl font-semibold mb-6">Billing Information</h2>
+            <form
+              className="space-y-5"
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleCheckout();
+              }}
+            >
+              <div>
+                <Label htmlFor="name" className="mb-1 block font-medium">
+                  Full Name
+                </Label>
                 <Input
                   id="name"
                   placeholder="John Doe"
-                  className="w-full mt-2"
-                  value={user?.name}
+                  value={user?.name || ""}
+                  disabled
+                  className="bg-gray-100 cursor-not-allowed"
                 />
-                <Label htmlFor="email">Email Address</Label>
+              </div>
+              <div>
+                <Label htmlFor="email" className="mb-1 block font-medium">
+                  Email Address
+                </Label>
                 <Input
                   id="email"
                   type="email"
                   placeholder="you@example.com"
-                  className="w-full mt-2"
-                  value={user?.email}
+                  value={user?.email || ""}
+                  disabled
+                  className="bg-gray-100 cursor-not-allowed"
                 />
-                <Label htmlFor="address">Shipping Address</Label>
+              </div>
+              <div>
+                <Label htmlFor="address" className="mb-1 block font-medium">
+                  Shipping Address
+                </Label>
                 <Textarea
                   id="address"
-                  placeholder="123 Main st. City, State"
-                  className="w-full h-[175px] mt-2"
+                  placeholder="123 Main St, City, State"
+                  className="resize-none"
+                  rows={6}
+                  value={address}
                   onChange={(e) => setAddress(e.target.value)}
+                  required
                 />
-                <Button
-                  onClick={handleCheckout}
-                  className="w-full cursor-pointer"
-                >
-                  Place Order
-                </Button>
               </div>
-            </Card>
-          </div>
-        </div>
-      </div>
+              <Button
+                type="submit"
+                className="w-full"
+                disabled={cartItems.length === 0}
+              >
+                Place Order
+              </Button>
+            </form>
+          </Card>
+        </section>
+      </motion.div>
     </div>
   );
 };

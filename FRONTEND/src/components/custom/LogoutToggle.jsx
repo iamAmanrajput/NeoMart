@@ -9,6 +9,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setUserLogout } from "@/redux/slices/authSlice";
+import { Button } from "../ui/button";
 
 const LogoutToggle = ({ user }) => {
   const [image, setImage] = useState("");
@@ -22,11 +23,19 @@ const LogoutToggle = ({ user }) => {
   const dispatch = useDispatch();
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger>
-        <Avatar className={`cursor-pointer `}>
-          <AvatarImage className="bg-[#27272A]" src={image} />
-          {/* <AvatarFallback>{user?.name?.charAt(0).toUpperCase()}</AvatarFallback> */}
-        </Avatar>
+      <DropdownMenuTrigger asChild>
+        <Button
+          variant="outline"
+          className="relative overflow-hidden"
+          size="icon"
+        >
+          <Avatar className={`cursor-pointer`}>
+            <AvatarImage className="bg-[#27272A]" src={image} />
+            <AvatarFallback>
+              {user?.name?.charAt(0).toUpperCase()}
+            </AvatarFallback>
+          </Avatar>
+        </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <Link to="/orders">
