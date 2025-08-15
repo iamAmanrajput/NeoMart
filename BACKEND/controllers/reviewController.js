@@ -162,7 +162,7 @@ exports.getReviews = async (req, res) => {
     let reviews = await Review.find({ productId: id })
       .populate({
         path: "userId",
-        select: "name",
+        select: "name  profileImg",
       })
       .populate({
         path: "replies.userId",
